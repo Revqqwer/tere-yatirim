@@ -383,6 +383,7 @@ var tl=new Intl.NumberFormat('tr-TR',{maximumFractionDigits:0});
 function money(v){var a=Math.abs(v),s=v<0?'−':'';if(a>=1e9)return s+'₺'+(a/1e9).toFixed(2).replace('.',',')+' Mr';if(a>=1e6)return s+'₺'+(a/1e6).toFixed(1).replace('.',',')+'M';if(a>=1e3)return s+'₺'+(a/1e3).toFixed(0)+'K';return s+'₺'+tl.format(a);}
 function pr(v){return '₺'+v.toFixed(2).replace('.',',');}
 function pct(v){return (v>=0?'+':'−')+Math.abs(v).toFixed(1).replace('.',',')+'%';}
+function hap(h){try{var C=window.Capacitor,H=C&&C.Plugins&&C.Plugins.Haptics;if(H){H.impact({style:h?'HEAVY':'LIGHT'});}}catch(e){}}
 function clamp(v){return Math.max(0,Math.min(100,v));}
 function pick(a){return a[Math.random()*a.length|0];}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
@@ -575,7 +576,7 @@ var SHOCKS=[
  ['Karadeniz\'de 3. kez "dev doğalgaz" bulundu.',4,10],
  ['Bir emekli eski 5 lirayı bozdurup milyoner oldu, herkes borsada.',3,12]];
 var bkTimer=null;
-function shock(){
+function shock(){hap(1);
   var x=pick(SHOCKS),pct=x[1]*(0.8+Math.random()*0.4);
   S.price*=1+pct/100;S.hype=clamp(S.hype+x[2]*M.hm);S.flow=Math.max(-1,Math.min(1,S.flow+(pct>0?0.4:-0.4)));
   flag('Son dakika',pct>0?'#2fd08c':'#ff4f66');
@@ -599,7 +600,7 @@ function evGZ(){return {cls:'gz',t:'Araştırmacı gazeteci',p:'Bağımsız bir 
   ['Görmezden gel','Basın +20 · radar +8 · öfke +6',function(){G.press=clamp(G.press+20);radarUp(8);angerUp(6);msg('news','Bağımsız Gazete','Belgeler ortada: Influencer\'lara TERE\'den ödeme yapıldı.');}]]};}
 
 /* ---------- işlemler ---------- */
-function buy(){var s=S,lot=lotSize,cost=lot*s.price;if(G.over||paused)return;if(s.shortLots>0){cover();return;}if(G.cash<cost){lot=Math.floor(G.cash/s.price/1000)*1000;cost=lot*s.price;}if(lot<=0)return;
+function buy(){var s=S,lot=lotSize,cost=lot*s.price;if(G.over||paused)return;hap();if(s.shortLots>0){cover();return;}if(G.cash<cost){lot=Math.floor(G.cash/s.price/1000)*1000;cost=lot*s.price;}if(lot<=0)return;
   s.flow=Math.min(1,Math.max(0,s.flow)+lot/s.float*8);
   G.cash-=cost;s.cost+=cost;s.lots+=lot;s.maxLots=Math.max(s.maxLots,s.lots);s.price*=1+lot/s.float*0.22*(1+s.flow*3);s.cur.v+=lot;
   if(s.flow>0.5){s.hype=clamp(s.hype+s.flow*2);}
@@ -607,7 +608,7 @@ function buy(){var s=S,lot=lotSize,cost=lot*s.price;if(G.over||paused)return;if(
     msg('news','AKD Bülteni','TERE Yatırım '+s.t+'\'de en çok alan kurum! Büyük oyuncu tahtaya girdi.');
     setTimeout(function(){if(!G.over)msg('halk',pick(names),'TERE alıyorsa bir bildiği var, ben de '+s.t+' aldım!');},900);}
   if(s.lots/s.float>0.25)radarUp(lot/s.float*35);ui();draw();}
-function sell(){var s=S;if(G.over||paused)return;if(s.lots<=0){shortSell();return;}var lot=Math.min(lotSize,s.lots),avg=s.cost/s.lots,rev=lot*s.price;
+function sell(){var s=S;if(G.over||paused)return;hap();if(s.lots<=0){shortSell();return;}var lot=Math.min(lotSize,s.lots),avg=s.cost/s.lots,rev=lot*s.price;
   G.cash+=rev;var gain=rev-avg*lot;G.pnl+=gain;s.cost-=avg*lot;s.lots-=lot;s.sold+=lot;s.cur.v+=lot;
   s.pubLots+=lot;s.pubCost+=rev;G.victims+=Math.round(lot/2500);
   s.flow=Math.max(-1,Math.min(0,s.flow)-lot/s.float*8);
@@ -636,7 +637,7 @@ var BF={
  shortrep:['news','Para Gündem','Açığa satıcı raporundaki rakamlar yanlış çıktı, %T sert yükseliyor.']};
 function bfChance(id){var o=OPS[id];if(!o||o.g==='def')return 0;var u=G.use[id]||0;
   return Math.min(0.45,(o.bf||0.1)+u*0.04+G.press/500+(S.burnt?0.1:0)+(id==='kap'?S.kap*0.1:0));}
-function backfire(id){var s=S,o=OPS[id],down=o.g==='down',x=BF[id];
+function backfire(id){hap(1);var s=S,o=OPS[id],down=o.g==='down',x=BF[id];
   if(down){s.price*=1+(0.03+Math.random()*0.04);s.flow=Math.min(1,Math.max(0,s.flow)+0.5);s.hype=clamp(s.hype+10);radarUp(3);}
   else{s.price*=1-(0.03+Math.random()*0.04);s.flow=Math.max(-1,Math.min(0,s.flow)-0.5);s.hype=clamp(s.hype*0.5);radarUp(id==='kap'||id==='wash'?12:4);}
   flag('Ters tepti','#ff8a3d');
@@ -870,7 +871,7 @@ function startFree(){
   var l=add(bt,'button','sec','🏆 Serbest mod tablosu');l.onclick=function(){showLB(null,startFree,null,'free');};
   $('ov').hidden=false;
 }
-function freeEnd(kind){
+function freeEnd(kind){hap(1);
   G.over=true;paused=true;var D=$('dlg');D.innerHTML='';
   var caught=kind==='raid'||kind==='anger';
   var liquid=S.lots*S.price*0.85,shortCost=S.shortLots*S.price*1.15-S.shortRev,final=caught?0:G.cash+liquid-S.shortLots*S.price*1.15,score=final-M.budget;
@@ -889,7 +890,7 @@ function freeEnd(kind){
   var st=add(bt,'button','sec','Ana menü');st.onclick=intro;
   $('ov').hidden=false;
 }
-function gameOver(kind){
+function gameOver(kind){hap(1);
   if(G.mode==='free'){freeEnd(kind);return;}
   G.over=true;paused=true;var D=$('dlg');D.innerHTML='';
   var full=kind==='final'||kind==='jet'||kind==='quit';
@@ -983,6 +984,6 @@ setInterval(step,TICK);
 </script>
 
 <script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
-<!-- build 16245d17ee -->
+<!-- build 2700bf80fe -->
 </body>
 </html>
