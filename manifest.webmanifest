@@ -1,0 +1,30 @@
+{
+  "name": "TERE YATIRIM",
+  "short_name": "TERE",
+  "description": "Hiciv borsa oyunu: hisseyi pompala, halka boşalt, SPK'dan kaç.",
+  "lang": "tr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0d1a2e",
+  "theme_color": "#1a1240",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
