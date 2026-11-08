@@ -103,6 +103,10 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--gold);outline-o
 .op .c{font-family:var(--f-num);font-size:12px;color:var(--gold)}
 .op .cd{position:absolute;left:0;bottom:0;height:3px;background:var(--hype)}
 .op.kap{border-color:rgba(58,160,255,.5)}
+.opg{display:flex;align-items:center;gap:6px;font-family:var(--f-num);font-size:10px;letter-spacing:.1em;text-transform:uppercase;margin:6px 0 0;padding:4px 0}
+.opg:first-child{margin-top:0}
+.opg .ms{font-size:16px}
+.opg-up{color:var(--up)}.opg-down{color:var(--down)}.opg-def{color:var(--kap)}
 .op.new::after{content:"YENİ";position:absolute;right:8px;bottom:6px;font-family:var(--f-num);font-size:9px;color:var(--gold)}
 .feed{grid-area:feed;padding:10px 0;max-height:260px;display:flex;flex-direction:column}
 .msgs{overflow-y:auto;display:flex;flex-direction:column;padding:0 12px}
@@ -279,6 +283,34 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
   .breaking{left:8px;right:8px;top:8px;padding:8px 10px}.breaking span{font-size:12px}
   .dlg{padding:18px}
 }
+.mobbar .tabs{display:none}
+@media (max-width:700px){
+  html,body{height:100%;overscroll-behavior:none}
+  body{overflow:hidden;padding:0 !important;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+  input{-webkit-user-select:text;user-select:text}
+  #city{height:40vh}
+  .app{height:100%;display:grid;gap:6px;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr);grid-template-areas:"top" "chart" "panel";
+    padding:max(6px,env(safe-area-inset-top,0px)) max(8px,env(safe-area-inset-right,0px)) calc(124px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
+  .mis,.side,.feed{grid-area:panel;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;max-height:none}
+  .side{gap:8px}
+  body:not([data-tab="mis"]) .mis{display:none}
+  body:not([data-tab="feed"]) .feed{display:none}
+  body[data-tab="mis"] .side,body[data-tab="feed"] .side{display:none}
+  .feed .msgs{overflow:visible}
+  .top{grid-template-columns:1fr auto;padding:8px 10px;gap:6px 8px}
+  .brand{flex-direction:row;align-items:center;gap:8px}
+  .logo{font-size:16px}.daypill{padding:2px 8px;font-size:11px}
+  .stats{gap:4px}.st{padding:5px 7px;gap:3px;border-radius:8px}
+  .jet{padding:6px 10px;font-size:11px}
+  .ch-h{padding:8px 10px}
+  .cv{height:max(200px,min(36vh,340px))}
+  .mobbar{flex-direction:column;gap:8px;padding-top:6px}
+  .mobbar .tabs{display:flex;gap:4px}
+  .mobbar .tabs button{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 4px;border-radius:9px;background:transparent;border:1px solid transparent;color:var(--mute);font-size:13px;font-weight:500;position:relative}
+  .mobbar .tabs button.on{background:rgba(245,196,81,.12);border-color:rgba(245,196,81,.35);color:var(--gold)}
+  .mobbar .tabs i{position:absolute;top:4px;right:14%;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--siren);color:#fff;font-style:normal;font-family:var(--f-num);font-size:10px;line-height:16px}
+  .mobbar .mb-row{display:flex;gap:8px;align-items:stretch}
+}
 .dlg{border-radius:16px;box-shadow:0 30px 80px -20px rgba(0,0,0,.7);background:linear-gradient(180deg,#1b2242,#121831)}
 </style>
 
@@ -338,7 +370,7 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
   <div class="p feed"><h3><span class="ms">forum</span>Halkın akışı</h3><div class="msgs" id="msgs" aria-live="polite"></div></div>
 </div>
 
-<div class="mobbar" id="mobbar"><div class="mb-px"><small id="mbTk">—</small><b id="mbPx">₺0</b></div><button class="mb-lot" id="mbLot" aria-label="Lot büyüklüğü">1M lot</button><button class="buy" id="mbBuy">AL</button><button class="sell" id="mbSell">SAT</button></div>
+<div class="mobbar" id="mobbar"><nav class="tabs" id="tabs" aria-label="Paneller"><button data-tab="ops" class="on"><span class="ms">bolt</span>İşlem</button><button data-tab="mis"><span class="ms">assignment</span>Görev</button><button data-tab="feed"><span class="ms">forum</span>Akış<i id="feedBadge" hidden></i></button></nav><div class="mb-row"><div class="mb-px"><small id="mbTk">—</small><b id="mbPx">₺0</b></div><button class="mb-lot" id="mbLot" aria-label="Lot büyüklüğü">1M lot</button><button class="buy" id="mbBuy">AL</button><button class="sell" id="mbSell">SAT</button></div></div>
 
 <div class="ov" id="ov"><div class="dlg" id="dlg"></div></div>
 
@@ -376,41 +408,45 @@ function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
 /* ---------- görevler ---------- */
 var MISSIONS=[
  {t:'SISCM',n:'Şişme Cam',p:3.10,f:60e6,budget:50e6,goal:15e6,radar:60,anger:40,hm:1,vol:1,
-  ops:['tg','bot','inf','wash','short','hide'],
+  ops:['tg','bot','inf','wash','short','spoof','infneg','hide'],
   task:'50 milyon TL\'lik Şişme Cam al. Telegram ve influencerlarla fiyatı kaldır, malı halka boşalt, bundan maksimum kârı et. SPK uyanmasın, halk da uyanmasın.',
   brief:'Kimsenin tanımadığı küçük bir cam fabrikası. Önce sessizce mal topla, sonra fiyatı mor hedef çizgisine kaldır, halk alırken malı boşalt.'},
  {t:'OZBLN',n:'ÖzBalon Denizcilik',p:7.80,f:80e6,budget:150e6,goal:60e6,radar:65,anger:50,hm:1,vol:1,
-  ops:['tg','bot','inf','news','fake','kap','wash','short','hide'],
+  ops:['tg','bot','inf','news','fake','kap','wash','short','spoof','infneg','kapneg','hide'],
   task:'150 milyon TL\'lik ÖzBalon Denizcilik topla. KAP\'a bir "dev navlun sözleşmesi" çak, fiyatı uçur, malı halkın eline tutuştur. En az 60 milyon kâr istiyoruz. Yalan büyükse çöküş de büyük olur, dikkat.',
   brief:'Tek bir paslı gemisi olan bir denizcilik şirketi. Artık elinde KAP var: "dev navlun sözleşmesi" gibi bir açıklama her şeyi değiştirir. Ama yalan büyüdükçe çöküş de sert olur.'},
  {t:'TERE',n:'TERE Yatırım',p:2.40,f:120e6,budget:40e6,startLots:40e6,startCost:0.5,goal:100e6,pump:1.4,radar:70,anger:55,hm:1,vol:1,
-  ops:['tg','bot','inf','news','fake','kap','tv','star','wash','short','fon','hide','law'],
+  ops:['tg','bot','inf','news','fake','kap','tv','star','wash','short','spoof','infneg','kapneg','shortrep','fon','hide','law'],
   task:'Sıra kendi hissemiz TERE\'de. Elindeki 40 milyon lot kurucu payını yüksekten halka sat, 40 milyon nakitle de destek alımı yap. En az 100 milyon kâr. Ünlü reklam yüzü artık bizimle.',
   brief:'Sıra kendi şirketinde. Elinde 40 milyon lot kurucu payı var, maliyeti lot başı 50 kuruş. Hisseyi şişir ve kurucu paylarını halka sat. Ünlü reklam yüzü ve avukat ordusu artık emrinde.'},
  {t:'SISBN',n:'Şiş Bankası',p:0.85,f:320e6,budget:100e6,goal:45e6,radar:75,anger:60,hm:1.4,vol:1.6,
-  ops:['tg','bot','inf','news','fake','kap','tv','star','wash','tavan','short','fon','hide','law','pr'],
+  ops:['tg','bot','inf','news','fake','kap','tv','star','wash','tavan','short','spoof','infneg','kapneg','shortrep','fon','hide','law','pr'],
   task:'100 milyon TL\'lik Şiş Bankası al. Halk "banka batmaz" diye gözü kapalı güveniyor, bunu sonuna kadar kullan. En az 45 milyon kâr, ama bankada panik başlarsa öfke çok hızlı büyür.',
   brief:'Kimsenin şubesini görmediği küçük bir banka. Halk bankaya güvendiği için operasyonlar daha etkili. Ama fiyat iki yöne de sert oynuyor; geç kalırsan mal elinde kalır.'},
  {t:'GOLGE',n:'Gölge Enerji',p:5.50,f:90e6,budget:200e6,goal:60e6,radar:85,anger:70,hm:1,vol:1.1,radarMin:45,
-  ops:['tg','bot','inf','news','fake','kap','tv','star','wash','tavan','short','fon','hide','law','pr'],
+  ops:['tg','bot','inf','news','fake','kap','tv','star','wash','tavan','short','spoof','infneg','kapneg','shortrep','fon','hide','law','pr'],
   task:'Son gün. 200 milyon TL\'lik Gölge Enerji al, son vurgunu yap, en az 60 milyon kâr et. Seans kapanınca jet kalkıyor, savcılık kapıda.',
   brief:'Son gün. Savcılık dosyayı istedi, radar sabahtan yüksek. Son vurguna gir ve kârını al. Seans kapanınca jet seni bekliyor.'}];
 var OPS={
- tg:{ic:'send',tn:'pump',n:'Telegram sinyal grubu',c:4e5,cd:18,d:'"Hedef 15 TL" mesajı · ilgi ↑'},
- inf:{ic:'smartphone',tn:'pump',n:'Influencer\'a öde',c:2e6,cd:36,d:'"Ben de aldım" videosu · ilgi ↑↑'},
- news:{ic:'newspaper',tn:'pump',n:'Haber sızdır',c:1e6,cd:36,d:'Ekonomi sitesinde söylenti · basın ↑'},
- kap:{ic:'campaign',tn:'kap',n:'KAP\'a yalan açıklama',c:0,cd:90,d:'Resmi açıklama · ilgi ↑↑↑ radar ↑↑',cls:'kap'},
- star:{ic:'star',tn:'pump',n:'Ünlü reklam yüzü',c:8e6,cd:120,d:'Şarkıcı "TERE ile kazandım" der · ilgi ↑↑↑'},
- wash:{ic:'sync_alt',tn:'pump',n:'Kendi kendine işlem',c:0,cd:14,d:'Hacmi şişir · ilgi ↑ radar ↑↑'},
- hide:{ic:'account_tree',tn:'safe',n:'Paravan hesaplara dağıt',c:1.5e6,cd:30,d:'İzleri karıştır · radar ↓'},
- law:{ic:'gavel',tn:'safe',n:'Avukat ordusu',c:6e6,cd:110,d:'Dilekçe yağmuru · radar ↓↓ basın ↓'},
- bot:{ic:'smart_toy',tn:'pump',n:'Bot hesaplarla yorum yağdır',c:2e5,cd:16,d:'Sosyal medyada "uçacak" yorumları · ilgi ↑'},
- fake:{ic:'description',tn:'pump',n:'Sahte hedef fiyat raporu',c:1.5e6,cd:50,d:'"Hedef fiyat 3 katı" raporu · ilgi ↑↑ radar ↑'},
- tv:{ic:'tv',tn:'pump',n:'TV\'de "uzman" konuştur',c:3e6,cd:70,d:'Akşam ana haberde övgü · ilgi ↑↑ basın ↑'},
- tavan:{ic:'vertical_align_top',tn:'pump',n:'Tavan kilidi',c:0,cd:40,d:'Tahtaya yığınla alım emri · fiyat ↑ radar ↑↑'},
- short:{ic:'south',tn:'dump',n:'Ayı baskını',c:5e5,cd:30,d:'"Şirket batıyor" söylentisi · fiyat ↓, ucuza topla'},
- fon:{ic:'account_balance',tn:'kap',n:'Malı kendi fonuna sat',c:0,cd:60,d:'Fiyatı düşürmeden boşalt · radar ↑↑ öfke ↑'},
- pr:{ic:'volunteer_activism',tn:'safe',n:'Hayır kampanyası PR\'ı',c:2.5e6,cd:80,d:'Bağış fotoğrafları · öfke ↓↓ basın ↓'}};
+ tg:{g:'up',ic:'send',tn:'pump',n:'Telegram sinyal grubu',c:4e5,cd:18,d:'"Hedef 15 TL" mesajı · ilgi ↑'},
+ inf:{g:'up',ic:'smartphone',tn:'pump',n:'Influencer\'a öde',c:2e6,cd:36,d:'"Ben de aldım" videosu · ilgi ↑↑'},
+ news:{g:'up',ic:'newspaper',tn:'pump',n:'Haber sızdır',c:1e6,cd:36,d:'Ekonomi sitesinde söylenti · basın ↑'},
+ kap:{g:'up',ic:'campaign',tn:'kap',n:'KAP\'a yalan açıklama',c:0,cd:90,d:'Resmi açıklama · ilgi ↑↑↑ radar ↑↑',cls:'kap'},
+ star:{g:'up',bf:.08,ic:'star',tn:'pump',n:'Ünlü reklam yüzü',c:8e6,cd:120,d:'Şarkıcı "TERE ile kazandım" der · ilgi ↑↑↑'},
+ wash:{g:'up',bf:.15,ic:'sync_alt',tn:'pump',n:'Kendi kendine işlem',c:0,cd:14,d:'Hacmi şişir · ilgi ↑ radar ↑↑'},
+ hide:{g:'def',ic:'account_tree',tn:'safe',n:'Paravan hesaplara dağıt',c:1.5e6,cd:30,d:'İzleri karıştır · radar ↓'},
+ law:{g:'def',ic:'gavel',tn:'safe',n:'Avukat ordusu',c:6e6,cd:110,d:'Dilekçe yağmuru · radar ↓↓ basın ↓'},
+ bot:{g:'up',ic:'smart_toy',tn:'pump',n:'Bot hesaplarla yorum yağdır',c:2e5,cd:16,d:'Sosyal medyada "uçacak" yorumları · ilgi ↑'},
+ fake:{g:'up',ic:'description',tn:'pump',n:'Sahte hedef fiyat raporu',c:1.5e6,cd:50,d:'"Hedef fiyat 3 katı" raporu · ilgi ↑↑ radar ↑'},
+ tv:{g:'up',ic:'tv',tn:'pump',n:'TV\'de "uzman" konuştur',c:3e6,cd:70,d:'Akşam ana haberde övgü · ilgi ↑↑ basın ↑'},
+ tavan:{g:'up',bf:.2,ic:'vertical_align_top',tn:'pump',n:'Tavan kilidi',c:0,cd:40,d:'Tahtaya yığınla alım emri · fiyat ↑ radar ↑↑'},
+ spoof:{g:'down',ic:'block',tn:'dump',n:'Sahte satış duvarı',c:0,cd:35,bf:.18,d:'Tahtaya iptal edilecek dev satış emirleri · fiyat ↓ radar ↑'},
+ infneg:{g:'down',ic:'thumb_down',tn:'dump',n:'Influencer\'a "kaçın" dedirt',c:1.5e6,cd:40,d:'"Bu hisseden hemen çıkın" videosu · fiyat ↓↓'},
+ kapneg:{g:'down',ic:'campaign',tn:'dump',n:'KAP\'a kötü haber at',c:0,cd:90,bf:.15,d:'"Büyük ortak pay satıyor" açıklaması · fiyat ↓↓↓ radar ↑↑'},
+ shortrep:{g:'down',ic:'report',tn:'dump',n:'Açığa satıcı raporu yayınlat',c:2e6,cd:70,d:'Yabancı fondan "şirket şişirilmiş" raporu · fiyat ↓↓↓ basın ↑'},
+ short:{g:'down',ic:'south',tn:'dump',n:'Ayı baskını',c:5e5,cd:30,d:'"Şirket batıyor" söylentisi · fiyat ↓, ucuza topla'},
+ fon:{g:'def',ic:'account_balance',tn:'kap',n:'Malı kendi fonuna sat',c:0,cd:60,d:'Fiyatı düşürmeden boşalt · radar ↑↑ öfke ↑'},
+ pr:{g:'def',ic:'volunteer_activism',tn:'safe',n:'Hayır kampanyası PR\'ı',c:2.5e6,cd:80,d:'Bağış fotoğrafları · öfke ↓↓ basın ↓'}};
 var KAP=[
  {h:'Yeni iş ilişkisi',b:'%N, adı açıklanmayan bir Körfez fonu ile stratejik ortaklık ön protokolü imzalamıştır.',hy:26,rd:8},
  {h:'Pay geri alım programı',b:'%N yönetim kurulu, piyasadan 50 milyon TL\'ye kadar pay geri alımı yapılmasına karar vermiştir.',hy:16,rd:5},
@@ -423,7 +459,7 @@ var halkMad=['%T\'de dolandırıldık! Herkes şikâyet etsin!','TERE Yatırım 
 
 var TICK=420; /* hikâye seansı 420 tick ≈ 3 dk, serbest mod 714 tick ≈ 5 dk */
 function dayT(){return G&&G.mode==='free'?714:420;}
-var ALLOPS=['tg','bot','inf','news','fake','kap','tv','star','wash','tavan','short','fon','hide','law','pr'];
+var ALLOPS=['tg','bot','inf','news','fake','kap','tv','star','wash','tavan','short','spoof','infneg','kapneg','shortrep','fon','hide','law','pr'];
 var FREE=[{t:'ZIPZP',n:'Zıpzıp Oyuncak',p:2.40,f:12e6},{t:'FISEK',n:'Fişek Enerji',p:4.10,f:10e6},{t:'BALON',n:'Balon Teknoloji',p:3.30,f:14e6},{t:'TIRIT',n:'Tırıt Gıda',p:5.60,f:9e6},{t:'SISBN',n:'Şiş Bankası',p:1.85,f:16e6}];
 function freeMission(){var b=pick(FREE);return {t:b.t,n:b.n,p:b.p*(0.85+Math.random()*0.3),f:b.f,budget:10e6,goal:0,radar:80,anger:70,hm:1.1,vol:1.2,ops:ALLOPS,free:true,
   task:'10 milyon TL ile '+b.n+' tahtasına gir. Yukarı bas, aşağı bas, tahtayı istediğin gibi oynat; 5 dakikada maksimum kârı yap. SPK ve halk limitini aşma.',
@@ -471,7 +507,7 @@ function msg(kind,who,text){if(text===lastMsg)return;lastMsg=text;var b=$('msgs'
   d.innerHTML='<span class="av"></span><div class="mb"><div class="mh"><b class="who"></b><span class="chip"></span><span class="t"></span></div><div class="tx"></div></div>';
   var ini=who.replace(/[^A-Za-zÇĞİÖŞÜçğıöşü ]/g,' ').trim().split(/\s+/);d.querySelector('.av').textContent=((ini[0]||'?')[0]+((ini[1]||'')[0]||'')).toUpperCase();
   d.querySelector('.who').textContent=who;d.querySelector('.chip').textContent=CHIP[kind]||'';d.querySelector('.tx').textContent=text;d.querySelector('.t').textContent=clockText();
-  b.prepend(d);while(b.children.length>40)b.lastChild.remove();}
+  b.prepend(d);if(document.body.dataset.tab!=='feed'&&(kind==='kap'||kind==='spk'||kind==='news')){unread++;var fb=document.getElementById('feedBadge');if(fb){fb.textContent=unread>9?'9+':unread;fb.hidden=false;}}while(b.children.length>40)b.lastChild.remove();}
 function flag(label,col){S.flags.push({i:S.candles.length,label:label,col:col});}
 function clockText(){if(!G||G.tick==null)return '';var m=Math.floor(G.tick/dayT()*480),h=10+Math.floor(m/60);return String(h).padStart(2,'0')+':'+String(m%60).padStart(2,'0');}
 
@@ -582,12 +618,37 @@ function sell(){var s=S;if(G.over||paused)return;if(s.lots<=0){shortSell();retur
   radarUp(lot/s.float*(s.hype<20?30:8));angerUp(lot/s.float*(s.hype<20?55:14));
   if(Math.random()<.35)flag('Satış','#ff4f66');if(s.lots<1)s.lots=0;ui();draw();}
 function oc(o){return G&&G.mode==='free'?o.c*0.2:o.c;}
+var BF={
+ tg:['halk','Ekşi Sözlük','"VIP sinyal grubu" ekran görüntüleri ifşa oldu: %T pompalanıyor!'],
+ bot:['halk','Bot avcısı','Bu yorumların hepsi bot! %T hesaplarının profil fotoğrafı aynı 😂'],
+ inf:['inf','@ZenginOlTayfun','Videonun altı "dolandırıcı" yorumlarıyla doldu, video silindi.'],
+ news:['news','Teyit Hattı','"%N yabancı yatırımcıyla görüşüyor" haberi asılsız çıktı.'],
+ fake:['news','Pay Analiz A.Ş.','Raporu yazan analistin lisansı olmadığı ortaya çıktı, rapor geri çekildi.'],
+ tv:['news','Akşam Ekonomi','Canlı yayında "uzman" şirketin adını yanlış söyledi, sosyal medya dalga geçiyor.'],
+ star:['inf','Ünlü Şarkıcı','"Bu hisseyi hiç duymadım, reklam metnini okudum" dedi. Video viral oldu.'],
+ wash:['spk','SPK','%T\'de aynı hesaplar arasında karşılıklı işlem tespit edildi.'],
+ tavan:['halk','borsaci_ali','%T\'de tavan emirleri bir anda silindi! Sahte alıcı varmış, kaçın!'],
+ kap:['spk','SPK','KAP açıklaması için şirketten acil açıklama istendi, %T\'de işlem sırası durduruldu.'],
+ short:['halk','Emekli_Nuri','"Batıyor" dediler ama inanmadım, %T\'yi dipten topladım!'],
+ spoof:['halk','borsaci_ali','%T\'deki satış duvarı sahte! Biri tahtayı korkutmaya çalışıyor, alın!'],
+ infneg:['inf','@ZenginOlTayfun','Takipçiler "geçen hafta al diyordun" diye isyan etti, kimse satmadı.'],
+ kapneg:['news','Piyasa Haber','Kötü haber zaten fiyatlanmış; %T tepki alımıyla yükseliyor.'],
+ shortrep:['news','Para Gündem','Açığa satıcı raporundaki rakamlar yanlış çıktı, %T sert yükseliyor.']};
+function bfChance(id){var o=OPS[id];if(!o||o.g==='def')return 0;var u=G.use[id]||0;
+  return Math.min(0.45,(o.bf||0.1)+u*0.04+G.press/500+(S.burnt?0.1:0)+(id==='kap'?S.kap*0.1:0));}
+function backfire(id){var s=S,o=OPS[id],down=o.g==='down',x=BF[id];
+  if(down){s.price*=1+(0.03+Math.random()*0.04);s.flow=Math.min(1,Math.max(0,s.flow)+0.5);s.hype=clamp(s.hype+10);radarUp(3);}
+  else{s.price*=1-(0.03+Math.random()*0.04);s.flow=Math.max(-1,Math.min(0,s.flow)-0.5);s.hype=clamp(s.hype*0.5);radarUp(id==='kap'||id==='wash'?12:4);}
+  flag('Ters tepti','#ff8a3d');
+  if(x)msg(x[0],x[1],x[2].replace(/%T/g,s.t).replace(/%N/g,s.n));
+  msg('ic','Ters tepti','"'+o.n+'" ters tepti: fiyat '+(down?'yükseldi':'düştü')+'.');}
 function runOp(id){
   var o=OPS[id],s=S;
   if(G.over||paused||(G.cds[id]||0)>0||G.cash<oc(o))return;
   if(id==='kap'){modal(kapDlg());return;}
   if(id==='fon'&&s.lots<=0)return;
   G.cash-=oc(o);G.cds[id]=o.cd;curOp=id;
+  if(Math.random()<bfChance(id)){backfire(id);curOp=null;G.use[id]=(G.use[id]||0)+1;ui();draw();return;}
   if((G.use[id]||0)>=2&&['tg','inf','wash','star','news'].indexOf(id)>=0&&Math.random()<.5)msg('halk',pick(names),'Bu '+o.n.toLowerCase()+' numarası yine mi? Kokusu çıktı artık.');
   if(id==='tg'){hypeUp(17);radarUp(3);flag('Telegram','#86c0ff');msg('halk','VIP Sinyal Grubu 💎','🔥 '+s.t+' hedef 15 TL. Acele edin, yer sınırlı!');}
   if(id==='inf'){hypeUp(34);radarUp(6);flag('Influencer','#c98bff');msg('inf','@ZenginOlTayfun (1,2M takipçi)','Arkadaşlar '+s.t+'\'yi bir yere yazın. Ben kendi paramla aldım 🚀');}
@@ -602,11 +663,15 @@ function runOp(id){
   if(id==='tavan'){s.price*=1.035;s.flow=Math.min(1,Math.max(0,s.flow)+0.6);s.cur.v+=s.float*0.05;hypeUp(8);radarUp(9);flag('Tavan','#2fd08c');msg('halk','borsaci_ali',s.t+' tavanda kilit! Alıcılar sırada bekliyor.');}
   if(id==='short'){s.price*=0.94;s.flow=Math.max(-1,Math.min(0,s.flow)-0.6);s.hype=clamp(s.hype*0.6);radarUp(4);angerUp(2);flag('Ayı','#ff4f66');msg('news','Kulis',s.n+' iflasın eşiğinde iddiası. Küçük yatırımcı panikte.');}
   if(id==='fon'){var fl=Math.min(s.lots,s.float*0.08),avg=s.cost/s.lots,rv=fl*s.price;G.cash+=rv;G.pnl+=rv-avg*fl;s.cost-=avg*fl;s.lots-=fl;s.sold+=fl;G.victims+=Math.round(fl/1500);radarUp(13);angerUp(3);flag('Fon','#3aa0ff');msg('ic','TERE Portföy',tl.format(Math.round(fl))+' lot '+s.t+', yönettiğimiz yatırım fonlarına piyasa fiyatından devredildi.');if(s.lots<1)s.lots=0;}
+  if(id==='spoof'){s.price*=0.965;s.flow=Math.max(-1,Math.min(0,s.flow)-0.6);s.hype=clamp(s.hype*0.8);radarUp(8);flag('Duvar','#ff4f66');msg('halk','borsaci_ali',s.t+'\'de dev satış duvarı var! Büyük oyuncu çıkıyor.');}
+  if(id==='infneg'){s.price*=0.95;s.flow=Math.max(-1,Math.min(0,s.flow)-0.5);s.hype=clamp(s.hype*0.6);radarUp(5);angerUp(2);flag('Kaçın','#ff4f66');msg('inf','@ZenginOlTayfun (1,2M takipçi)','Arkadaşlar '+s.t+'\'den hemen çıkın, içeriden bilgi aldım. Sonra demedi demeyin!');}
+  if(id==='kapneg'){s.price*=0.91;s.flow=-1;s.hype=clamp(s.hype*0.4);radarUp(14);angerUp(4);flag('KAP −','#3aa0ff');msg('kap','KAP · '+s.t+' · Özel Durum','Pay satışı: Şirketin büyük ortağı elindeki payların tamamını satma kararı almıştır.');}
+  if(id==='shortrep'){s.price*=0.9;s.flow=Math.max(-1,Math.min(0,s.flow)-0.7);s.hype=clamp(s.hype*0.5);G.press=clamp(G.press+15);radarUp(6);flag('Rapor −','#ff4f66');msg('news','Para Gündem','Yabancı açığa satıcı fon: "'+s.n+' değerinin 5 katına şişirilmiş."');}
   if(id==='pr'){G.anger=clamp(G.anger-22);G.press=clamp(G.press-8);msg('news','Piyasa Haber','TERE Yatırım\'dan köy okullarına bağış. CEO çocuklarla fotoğraf çektirdi.');}
   curOp=null;G.use[id]=(G.use[id]||0)+1;ui();
 }
 function kapDlg(){var s=S;return {cls:'kap',t:'Özel durum açıklaması',p:s.n+' adına KAP\'a gönderilecek açıklamayı seç. Yalan büyüdükçe ilgi ve risk de büyür. Hisse çökerse yalan açıklama halkın öfkesini katlar.',o:KAP.map(function(k){
-  var m=1+s.kap*0.6;return [k.h,'İlgi +'+Math.round(k.hy*M.hm)+' · radar +'+Math.round(k.rd*m),function(){G.cds.kap=OPS.kap.cd;hypeUp(k.hy);radarUp(k.rd*m);s.kap++;flag('KAP','#3aa0ff');
+  var m=1+s.kap*0.6;return [k.h,'İlgi +'+Math.round(k.hy*M.hm)+' · radar +'+Math.round(k.rd*m),function(){G.cds.kap=OPS.kap.cd;var bfk=Math.random()<bfChance('kap');G.use.kap=(G.use.kap||0)+1;s.kap++;if(bfk){backfire('kap');ui();return;}hypeUp(k.hy);radarUp(k.rd*m);flag('KAP','#3aa0ff');
     msg('kap','KAP · '+s.t+' · Özel Durum',k.h+': '+k.b.replace('%N',s.n));setTimeout(function(){if(!G.over)msg('halk',pick(names),'KAP\'a bakın!! '+s.t+' '+(k.hy>40?'uçacak!':'resmi açıkladı, güvenilir.'));},1500);ui();}];
 }).concat([['Vazgeç','',function(){}]])};}
 
@@ -702,10 +767,13 @@ function brief(i){
 function add(p,tag,cls,text){var e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;p.appendChild(e);return e;}
 function res(D,rows){var r=add(D,'div','res');rows.forEach(function(x){add(r,'span','',x[0]);add(r,'b','',x[1]);});}
 function buildOps(){var E=$('ops');E.innerHTML='';var prev=G.mode!=='free'&&G.day>0?MISSIONS[G.day-1].ops:M.ops;
-  M.ops.forEach(function(id){var o=OPS[id],b=document.createElement('button');b.className='op '+(o.cls||'')+(prev.indexOf(id)<0?' new':'');b.dataset.op=id;
+  [['up','trending_up','Fiyatı yükselt'],['down','trending_down','Fiyatı düşür'],['def','shield','Savunma ve çıkış']].forEach(function(gr){
+  var ids=M.ops.filter(function(id){return OPS[id].g===gr[0];});if(!ids.length)return;
+  var h=add(E,'div','opg opg-'+gr[0]);add(h,'span','ms',gr[1]);h.appendChild(document.createTextNode(gr[2]));
+  ids.forEach(function(id){var o=OPS[id],b=document.createElement('button');b.className='op '+(o.cls||'')+(prev.indexOf(id)<0?' new':'');b.dataset.op=id;
   b.innerHTML='<span class="ic"></span><b></b><span class="c"></span><small></small><span class="cd"></span>';
   var ic=b.querySelector('.ic');ic.className='ic ms t-'+o.tn;ic.textContent=o.ic;b.querySelector('b').textContent=o.n;b.querySelector('.c').textContent=o.c?money(oc(o)):'bedava';
-  b.querySelector('small').textContent=o.d;b.onclick=function(){runOp(id)};E.appendChild(b);});}
+  b.querySelector('small').textContent=o.d;b.onclick=function(){runOp(id)};E.appendChild(b);});});}
 function ui(){
   var s=S;
   $('day').textContent=(G.day+1)+'/'+MISSIONS.length;$('cash').textContent=money(G.cash);$('abroad').textContent=money(G.abroad);
@@ -729,7 +797,7 @@ function ui(){
   var gl=$('goals');gl.innerHTML='';goalState().forEach(function(x){var li=add(gl,'li',x.warn?'warn':x.ok?'ok':'no');add(li,'i','',x.warn?'!':x.ok?'✓':'○');add(li,'span','',x.t);add(li,'small','',x.v);});
   var bc=$('bClose');bc.className='closebtn'+(done()?' ready':'');bc.textContent=G.mode==='free'?'Seans 5 dakika sürer. Kapanışta elinde kalan mal %15 iskontoyla bozdurulur.':'Tüm hedefler tamamlanınca seans otomatik kapanır. Süre biterse görev başarısız olur.';
   document.querySelectorAll('.op').forEach(function(b){var o=OPS[b.dataset.op],cd=G.cds[b.dataset.op]||0;
-    b.querySelector('.cd').style.width=(cd/o.cd*100)+'%';b.classList.toggle('cool',cd>0);b.classList.toggle('poor',cd<=0&&G.cash<oc(o));b.querySelector('.c').textContent=cd>0?Math.ceil(cd*TICK/1000)+' sn':(o.c?money(oc(o)):'bedava');});
+    b.querySelector('.cd').style.width=(cd/o.cd*100)+'%';b.classList.toggle('cool',cd>0);b.classList.toggle('poor',cd<=0&&G.cash<oc(o));b.querySelector('.c').textContent=cd>0?Math.ceil(cd*TICK/1000)+' sn':(o.c?money(oc(o)):'bedava');var bf=bfChance(b.dataset.op);b.querySelector('small').textContent=o.d+(o.g!=='def'?' · ters tepme %'+Math.round(bf*100):'');});
 }
 
 /* ---------- grafik ---------- */
@@ -895,7 +963,10 @@ function setPauseLabel(){$('bPause').innerHTML=paused?'<span class="ms">play_arr
 
 /* ---------- bağlantılar ---------- */
 $('bBuy').onclick=buy;$('bSell').onclick=sell;$('mbBuy').onclick=buy;$('mbSell').onclick=sell;
-var LOTS=[250000,1000000,4000000];
+var LOTS=[250000,1000000,4000000],unread=0;
+function setTab(t){document.body.dataset.tab=t;[].forEach.call($('tabs').children,function(b){b.classList.toggle('on',b.dataset.tab===t);});if(t==='feed'){unread=0;$('feedBadge').hidden=true;}}
+$('tabs').addEventListener('click',function(e){var b=e.target.closest('button');if(b)setTab(b.dataset.tab);});
+document.body.dataset.tab='ops';
 function setLot(v){lotSize=v;[].forEach.call($('lotsel').children,function(x){x.classList.toggle('on',+x.dataset.l===v);});$('mbLot').textContent=(v>=1e6?(v/1e6)+'M':(v/1e3)+'K')+' lot';}
 $('mbLot').onclick=function(){setLot(LOTS[(LOTS.indexOf(lotSize)+1)%LOTS.length]);};
 $('bJet').onclick=function(){if(G.over||paused)return;modal({t:'Jete binmek üzeresin',p:'Seans akmaya devam ediyor. Kaçış fonunda '+money(G.abroad)+' var. Kasadaki '+money(G.cash)+' ve elindeki hisseler geride kalır. Emin misin?',o:[['✈ Kalk, gidiyoruz','Oyun biter, skor: '+money(G.abroad),function(){gameOver('jet');}],['Biraz daha kalayım','',function(){}]]});};
@@ -912,6 +983,6 @@ setInterval(step,TICK);
 </script>
 
 <script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
-<!-- build ee4e912292 -->
+<!-- build 16245d17ee -->
 </body>
 </html>
