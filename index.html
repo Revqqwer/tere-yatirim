@@ -308,6 +308,9 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .m-btn.gold{background:var(--gold);border-color:var(--gold);color:#241a00}
 .m-btn.gold .ms,.m-btn.gold small{color:#5a4300}
 .m-btn:active{transform:scale(.98)}
+.m-btn.ch{padding:11px 14px}
+.ch-n{flex:none;width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:var(--f-disp);font-size:16px;background:rgba(245,196,81,.15);color:var(--gold);border:1px solid rgba(245,196,81,.4)}
+.m-btn.ch b{font-size:16px}
 .m-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .m-sm{display:flex;align-items:center;justify-content:center;gap:6px;padding:11px;border-radius:12px;font-size:14px;font-weight:500}
 .m-sm .ms{font-size:18px;color:var(--gold)}
@@ -321,6 +324,16 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
   body[data-tab="chart"] .feed{display:flex;flex:1 0 auto;height:0;min-height:240px;overflow:hidden}
   body[data-tab="chart"] .feed .msgs{flex:1 1 0;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y}
   .top .logo{display:none}
+  .app>.top{order:0}.chart{order:1}.side{order:2}.feed{order:3}.mis{order:4}
+  body[data-tab="chart"] .side{display:flex;flex:none;overflow:visible}
+  body[data-tab="chart"] .side>.box:last-child{display:none}
+  body[data-tab="ops"] .side>.box:first-child{display:none}
+  body[data-tab="chart"] .side>.box:first-child{padding:10px 12px}
+  body[data-tab="chart"] .side h3{margin-bottom:8px}
+  body[data-tab="chart"] .side .kv{grid-template-columns:auto minmax(0,1fr) auto minmax(0,1fr);gap:5px 8px;font-size:11px}
+  body[data-tab="chart"] .side .kv>span{font-size:10px;line-height:1.2}
+  body[data-tab="chart"] .side .kv>b{text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  body[data-tab="chart"] .side .kv .meter,body[data-tab="chart"] .side .kv .flow{width:100%}
   body[data-tab="ops"] .side{display:flex;flex:1 1 0;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
   body[data-tab="mis"] .mis{display:flex;flex:1 1 0;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
   .cv{height:max(190px,min(34vh,340px))}
@@ -905,11 +918,23 @@ function intro(){
   function big(cls,icon,title,sub,fn){var b=add(bt,'button','m-btn '+cls);var ic=add(b,'span','ms',icon);var tx=add(b,'span','m-tx');add(tx,'b','',title);if(sub)add(tx,'small','',sub);b.onclick=fn;return b;}
   if(cp&&cp.day>0)big('gold','play_arrow','Devam et','Gün '+(cp.day+1)+' / 5',function(){D.className='dlg';continueFrom(cp);});
   big(cp&&cp.day>0?'':'gold','auto_stories',cp&&cp.day>0?'Yeni hikâye':'Hikâye modu','5 gün · 5 görev',function(){D.className='dlg';lsSet('tere_cp','null');newRun();brief(0);});
+  big('','format_list_numbered','Bölüm seç','İstediğin günden başla',chapters);
   big('','bolt','Serbest mod','10M TL · 5 dakika',function(){D.className='dlg';startFree();});
   var row=add(bt,'div','m-row');
   var h=add(row,'button','m-sm');add(h,'span','ms','help');h.appendChild(document.createTextNode('Nasıl oynanır'));h.onclick=howTo;
   var l=add(row,'button','m-sm');add(l,'span','ms','emoji_events');l.appendChild(document.createTextNode('Liderlik'));l.onclick=function(){D.className='dlg';showLB(null,intro);};
   add(D,'p','fine m-fine','Hiciv oyunudur. Şirketler, hisseler ve kişiler kurgudur. Piyasa dolandırıcılığı gerçek hayatta ağır suçtur.');
+  $('ov').hidden=false;
+}
+function chapters(){
+  var D=$('dlg');D.className='dlg menu';D.innerHTML='';
+  add(D,'div','eyebrow','Hikâye modu');add(D,'h2','','Bölüm seç').style.color='var(--gold)';
+  var bt=add(D,'div','m-btns');
+  MISSIONS.forEach(function(m,i){var b=add(bt,'button','m-btn ch');var n=add(b,'span','ch-n',String(i+1));var tx=add(b,'span','m-tx');add(tx,'b','',m.n);
+    add(tx,'small','',(m.startLots?'40M kurucu lotu':money(m.budget)+' bütçe')+' · hedef '+money(m.goal)+' · SPK %'+m.radar);
+    b.onclick=function(){D.className='dlg';newRun();brief(i);};});
+  var bk=add(D,'div','btns');var b=add(bk,'button','sec','Geri');b.onclick=intro;
+  add(D,'p','fine','Ortadan başlarsan kaçış fonun sıfırdan başlar.');
   $('ov').hidden=false;
 }
 function howTo(){
@@ -1045,6 +1070,6 @@ setInterval(step,TICK);
 </script>
 
 <script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
-<!-- build 3298d5bb33 -->
+<!-- build 819970b1e2 -->
 </body>
 </html>
