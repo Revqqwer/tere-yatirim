@@ -284,6 +284,42 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
   .dlg{padding:18px}
 }
 .mobbar .tabs{display:none}
+.op .rk{display:none}
+.dlg.menu{max-width:440px;text-align:center;padding:28px 22px 18px;background:radial-gradient(420px 260px at 50% 0%,rgba(245,196,81,.18),transparent 70%),linear-gradient(180deg,#1d1747,#111733)}
+.m-hero{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:22px}
+.m-logo{display:flex;flex-direction:column;font-family:var(--f-disp);line-height:.95}
+.m-logo span:first-child{font-size:clamp(54px,17vw,84px);color:var(--gold);text-shadow:0 0 30px rgba(245,196,81,.45)}
+.m-logo span:last-child{font-size:clamp(24px,7.5vw,36px);color:var(--fg);letter-spacing:.08em}
+.m-spark{display:flex;align-items:flex-end;gap:5px;height:56px}
+.m-spark i{display:block;width:12px;border-radius:2px;background:var(--up)}.m-spark i.r{background:var(--down)}
+.m-tag{margin:0;color:var(--fg);font-weight:500;font-size:15px}
+.m-btns{display:flex;flex-direction:column;gap:10px}
+.m-btn{display:flex;align-items:center;gap:14px;text-align:left;padding:14px 16px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12)}
+.m-btn .ms{font-size:26px;width:1em;color:var(--gold)}
+.m-btn .m-tx{display:flex;flex-direction:column}
+.m-btn b{font-family:var(--f-disp);font-weight:400;font-size:18px;letter-spacing:.02em}
+.m-btn small{font-family:var(--f-num);font-size:11px;color:var(--mute)}
+.m-btn.gold{background:var(--gold);border-color:var(--gold);color:#241a00}
+.m-btn.gold .ms,.m-btn.gold small{color:#5a4300}
+.m-btn:active{transform:scale(.98)}
+.m-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.m-sm{display:flex;align-items:center;justify-content:center;gap:6px;padding:11px;border-radius:12px;font-size:14px;font-weight:500}
+.m-sm .ms{font-size:18px;color:var(--gold)}
+.m-fine{margin-top:16px !important}
+@media (max-width:700px){
+  .mhide{display:none}
+  .side>.box:first-child{order:2}
+  .ops{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  .opg{grid-column:1/-1;margin:4px 0 0}
+  .op{grid-template-columns:30px minmax(0,1fr);grid-template-rows:auto auto;gap:2px 8px;padding:8px 8px 9px;min-height:62px;align-content:center}
+  .op .ic{grid-row:1/3;width:30px;height:30px;font-size:17px;border-radius:8px}
+  .op b{font-size:12px;line-height:1.2}
+  .op small{display:none}
+  .op .c{grid-column:2;grid-row:2;justify-self:start;font-size:10px;padding:1px 6px}
+  .op .rk{display:block;position:absolute;top:5px;right:6px;font-family:var(--f-num);font-size:9px;color:var(--anger)}
+  .op.new::after{bottom:auto;top:5px;right:auto;left:6px}
+  .dlg{max-height:calc(100% - 8px)}
+}
 @media (max-width:700px){
   html,body{height:100%;overscroll-behavior:none}
   body{overflow:hidden;padding:0 !important;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
@@ -303,7 +339,7 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
   .stats{gap:4px}.st{padding:5px 7px;gap:3px;border-radius:8px}
   .jet{padding:6px 10px;font-size:11px}
   .ch-h{padding:8px 10px}
-  .cv{height:max(200px,min(36vh,340px))}
+  .cv{height:max(190px,min(30vh,300px))}
   .mobbar{flex-direction:column;gap:8px;padding-top:6px}
   .mobbar .tabs{display:flex;gap:4px}
   .mobbar .tabs button{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 4px;border-radius:9px;background:transparent;border:1px solid transparent;color:var(--mute);font-size:13px;font-weight:500;position:relative}
@@ -751,12 +787,12 @@ function closeDay(timeUp){
     modal({t:'Hedefler tamamlanmadı',p:'Seansı şimdi kapatırsan görev başarısız sayılır.',keepPause:true,o:[['Seansı yine de kapat','Günü tekrar oynamak zorunda kalırsın',function(){G.tick=dayT();setTimeout(function(){closeDay(true);},0);}],['Devam et','',function(){}]]});
   }
 }
-function brief(i){
+function brief(i){$('dlg').className='dlg';
   paused=true;var m=MISSIONS[i],D=$('dlg');D.innerHTML='';
   add(D,'div','eyebrow','Yeni mesaj · Yönetim Kurulu');
   D.appendChild(taskCard(m,i));
-  add(D,'p','',m.brief);
-  var ul=add(D,'ul','dgoals');
+  add(D,'p','mhide',m.brief);
+  var ul=add(D,'ul','dgoals mhide');
   [(m.startLots?'Elinde: '+tl.format(m.startLots)+' lot kurucu payı':'Bütçe: '+money(m.budget)),'Topla: bütçenin %90\'ını hisseye yatır','Pompala: fiyatı maliyetinin '+(m.pump||1.6).toFixed(1).replace('.',',')+' katına çıkar (grafikte mor çizgi)','Boşalt: malın %90\'ını halka sat ve en az '+money(m.goal)+' kâr et','SPK radarı %'+m.radar+'\'a ulaşırsa baskın: oyun biter','Halk öfkesi %'+m.anger+'\'a ulaşırsa halk ayaklanır: oyun biter'].concat(m.abroadGoal?['Kaçış fonu: en az '+money(m.abroadGoal)]:[]).forEach(function(t){add(ul,'li','',t);});
   var prev=i>0?MISSIONS[i-1].ops:[];var nw=m.ops.filter(function(o){return prev.indexOf(o)<0;});
   if(i>0&&nw.length)add(D,'p','','Yeni operasyon: '+nw.map(function(o){return OPS[o].n;}).join(', ')+'.');
@@ -772,7 +808,7 @@ function buildOps(){var E=$('ops');E.innerHTML='';var prev=G.mode!=='free'&&G.da
   var ids=M.ops.filter(function(id){return OPS[id].g===gr[0];});if(!ids.length)return;
   var h=add(E,'div','opg opg-'+gr[0]);add(h,'span','ms',gr[1]);h.appendChild(document.createTextNode(gr[2]));
   ids.forEach(function(id){var o=OPS[id],b=document.createElement('button');b.className='op '+(o.cls||'')+(prev.indexOf(id)<0?' new':'');b.dataset.op=id;
-  b.innerHTML='<span class="ic"></span><b></b><span class="c"></span><small></small><span class="cd"></span>';
+  b.innerHTML='<span class="ic"></span><b></b><span class="c"></span><small></small><span class="rk"></span><span class="cd"></span>';
   var ic=b.querySelector('.ic');ic.className='ic ms t-'+o.tn;ic.textContent=o.ic;b.querySelector('b').textContent=o.n;b.querySelector('.c').textContent=o.c?money(oc(o)):'bedava';
   b.querySelector('small').textContent=o.d;b.onclick=function(){runOp(id)};E.appendChild(b);});});}
 function ui(){
@@ -798,7 +834,7 @@ function ui(){
   var gl=$('goals');gl.innerHTML='';goalState().forEach(function(x){var li=add(gl,'li',x.warn?'warn':x.ok?'ok':'no');add(li,'i','',x.warn?'!':x.ok?'✓':'○');add(li,'span','',x.t);add(li,'small','',x.v);});
   var bc=$('bClose');bc.className='closebtn'+(done()?' ready':'');bc.textContent=G.mode==='free'?'Seans 5 dakika sürer. Kapanışta elinde kalan mal %15 iskontoyla bozdurulur.':'Tüm hedefler tamamlanınca seans otomatik kapanır. Süre biterse görev başarısız olur.';
   document.querySelectorAll('.op').forEach(function(b){var o=OPS[b.dataset.op],cd=G.cds[b.dataset.op]||0;
-    b.querySelector('.cd').style.width=(cd/o.cd*100)+'%';b.classList.toggle('cool',cd>0);b.classList.toggle('poor',cd<=0&&G.cash<oc(o));b.querySelector('.c').textContent=cd>0?Math.ceil(cd*TICK/1000)+' sn':(o.c?money(oc(o)):'bedava');var bf=bfChance(b.dataset.op);b.querySelector('small').textContent=o.d+(o.g!=='def'?' · ters tepme %'+Math.round(bf*100):'');});
+    b.querySelector('.cd').style.width=(cd/o.cd*100)+'%';b.classList.toggle('cool',cd>0);b.classList.toggle('poor',cd<=0&&G.cash<oc(o));b.querySelector('.c').textContent=cd>0?Math.ceil(cd*TICK/1000)+' sn':(o.c?money(oc(o)):'bedava');var bf=bfChance(b.dataset.op);b.querySelector('small').textContent=o.d+(o.g!=='def'?' · ters tepme %'+Math.round(bf*100):'');b.querySelector('.rk').textContent=o.g!=='def'?'⚠ %'+Math.round(bf*100):'';});
 }
 
 /* ---------- grafik ---------- */
@@ -834,7 +870,7 @@ function draw(){
 
 /* ---------- pencereler ---------- */
 function modal(def){
-  var D=$('dlg');D.innerHTML='';
+  var D=$('dlg');D.className='dlg';D.innerHTML='';
   if(def.cls==='kap'){var h=add(D,'div','kaphead');h.innerHTML='<b>KAP</b><span>KAMUYU AYDINLATMA PLATFORMU</span>';}
   var t=add(D,'h2','',def.t);if(def.cls==='spk')t.style.color='var(--siren)';
   add(D,'p','',def.p);
@@ -844,26 +880,36 @@ function modal(def){
   $('ov').hidden=false;
 }
 function intro(){
-  var D=$('dlg');D.innerHTML='';
-  add(D,'div','big','TERE<br>YATIRIM').innerHTML='TERE<br>YATIRIM';
-  add(D,'p','','Yeni CEO\'muzsun. Her gün yönetim kurulu sana bir hisse ve bir hedef verecek. Fiyatı kaldır, halk alırken malı boşalt, her günün sonunda kârın yarısı CEO primi olarak kaçış fonuna yatar. 5 günü tamamlarsan jet seni bekliyor.');
-  var ol=add(D,'ol','steps');
-  [['Topla.','Günün bütçesini AL ile hisseye yatır. Bütçenin %90\'ı harcanınca bu aşama biter.'],
-   ['Pompala.','Telegram, influencer, haber, KAP\'a yalan açıklama ve kendi alımlarınla fiyatı grafikteki mor hedef çizgisine çıkar.'],
-   ['Boşalt.','İlgi yüksekken SAT. Malın %90\'ı satılınca biter. İlgi sönünce satarsan fiyat çöker, kâr erir ve halk kızar.'],
-   ['Kaç.','Her günün kârının yarısı otomatik olarak kaçış fonuna geçer. Skorun kaçış fonudur.']].forEach(function(x){var li=add(ol,'li');var sp=add(li,'span');add(sp,'b','',x[0]+' ');sp.appendChild(document.createTextNode(x[1]));});
-  var w=add(D,'p');w.innerHTML='<b style="color:var(--siren)">Nasıl kaybedersin:</b> SPK radarı günün limitine ulaşırsa baskın yersin. Halkı batırdıkça <b style="color:var(--anger)">halk öfkesi</b> artar; o da limite ulaşırsa halk ayaklanır. Aynı numarayı tekrar tekrar yaparsan etkisi azalır, riski artar.';
-  var bt=add(D,'div','btns');
+  var D=$('dlg');D.innerHTML='';D.className='dlg menu';
+  var hero=add(D,'div','m-hero');
+  var lg=add(hero,'div','m-logo');lg.innerHTML='<span>TERE</span><span>YATIRIM</span>';
+  var spark=add(hero,'div','m-spark');for(var i=0;i<9;i++){var c=add(spark,'i');c.style.height=(18+Math.round(Math.sin(i*1.3)*10+i*5))+'px';if(i===3||i===6)c.className='r';}
+  add(hero,'p','m-tag','Hisseyi pompala. Halka boşalt. SPK\'dan kaç.');
+  var bt=add(D,'div','m-btns');
   var cp=null;try{cp=JSON.parse(lsGet('tere_cp','null'));}catch(e){}
-  if(cp&&cp.day>0){var cb=add(bt,'button','go','Gün '+(cp.day+1)+'\'den devam et');cb.onclick=function(){continueFrom(cp);};}
-  var b=add(bt,'button',cp&&cp.day>0?'sec':'go',cp&&cp.day>0?'Baştan başla':'Göreve başla');b.onclick=function(){lsSet('tere_cp','null');newRun();brief(0);};
-  var fr=add(bt,'button','go','⚡ Serbest mod (5 dk)');fr.onclick=startFree;
-  var l=add(bt,'button','sec','🏆 Liderlik tablosu');l.onclick=function(){showLB(null,intro);};
-  add(D,'p','fine','Serbest mod: 10 milyon TL ile tek bir hissede 5 dakika boyunca tahtacılık yap. Ayrı bir liderlik tablosu var.');
-  add(D,'p','fine','Bu bir hiciv oyunudur. Şirketler, hisseler ve kişiler kurgudur. Pump and dump ve piyasa dolandırıcılığı gerçek hayatta ağır suçtur; mağdurları gerçek insanlardır.');
+  function big(cls,icon,title,sub,fn){var b=add(bt,'button','m-btn '+cls);var ic=add(b,'span','ms',icon);var tx=add(b,'span','m-tx');add(tx,'b','',title);if(sub)add(tx,'small','',sub);b.onclick=fn;return b;}
+  if(cp&&cp.day>0)big('gold','play_arrow','Devam et','Gün '+(cp.day+1)+' / 5',function(){D.className='dlg';continueFrom(cp);});
+  big(cp&&cp.day>0?'':'gold','auto_stories',cp&&cp.day>0?'Yeni hikâye':'Hikâye modu','5 gün · 5 görev',function(){D.className='dlg';lsSet('tere_cp','null');newRun();brief(0);});
+  big('','bolt','Serbest mod','10M TL · 5 dakika',function(){D.className='dlg';startFree();});
+  var row=add(bt,'div','m-row');
+  var h=add(row,'button','m-sm');add(h,'span','ms','help');h.appendChild(document.createTextNode('Nasıl oynanır'));h.onclick=howTo;
+  var l=add(row,'button','m-sm');add(l,'span','ms','emoji_events');l.appendChild(document.createTextNode('Liderlik'));l.onclick=function(){D.className='dlg';showLB(null,intro);};
+  add(D,'p','fine m-fine','Hiciv oyunudur. Şirketler, hisseler ve kişiler kurgudur. Piyasa dolandırıcılığı gerçek hayatta ağır suçtur.');
   $('ov').hidden=false;
 }
-function startFree(){
+function howTo(){
+  var D=$('dlg');D.className='dlg';D.innerHTML='';
+  add(D,'div','eyebrow','Nasıl oynanır');add(D,'h2','','Tahtacılığın 4 adımı').style.color='var(--gold)';
+  var ol=add(D,'ol','steps');
+  [['Topla.','Günün bütçesini AL ile hisseye yatır. Bütçenin %90\'ı harcanınca bu aşama biter.'],
+   ['Pompala.','"Fiyatı yükselt" operasyonları ve kendi alımlarınla fiyatı grafikteki mor hedef çizgisine çıkar.'],
+   ['Boşalt.','İlgi yüksekken SAT. Malın %90\'ı satılınca biter. Elinde mal yokken SAT açığa satar.'],
+   ['Kaç.','Her günün kârının yarısı kaçış fonuna geçer. Skorun kaçış fonudur.']].forEach(function(x){var li=add(ol,'li');var sp=add(li,'span');add(sp,'b','',x[0]+' ');sp.appendChild(document.createTextNode(x[1]));});
+  var w=add(D,'p');w.innerHTML='<b style="color:var(--siren)">Nasıl kaybedersin:</b> SPK radarı limite ulaşırsa baskın yersin. Halkı batırdıkça <b style="color:var(--anger)">halk öfkesi</b> artar; o da limite ulaşırsa halk ayaklanır. Operasyonlar bazen ters teper; aynı numarayı tekrarladıkça risk artar.';
+  var bt=add(D,'div','btns');var b=add(bt,'button','go','Anladım');b.onclick=intro;
+  $('ov').hidden=false;
+}
+function startFree(){$('dlg').className='dlg';
   newRun('free');G.freeM=freeMission();var m=G.freeM;paused=true;var D=$('dlg');D.innerHTML='';
   add(D,'div','eyebrow','Serbest mod · tahtacılık');D.appendChild(taskCard(m,0));add(D,'p','',m.brief);
   var bt=add(D,'div','btns');var b=add(bt,'button','go','Seansı aç');b.onclick=function(){startDay(0);$('ov').hidden=true;paused=false;setPauseLabel();};
@@ -871,7 +917,7 @@ function startFree(){
   var l=add(bt,'button','sec','🏆 Serbest mod tablosu');l.onclick=function(){showLB(null,startFree,null,'free');};
   $('ov').hidden=false;
 }
-function freeEnd(kind){hap(1);
+function freeEnd(kind){$('dlg').className='dlg';hap(1);
   G.over=true;paused=true;var D=$('dlg');D.innerHTML='';
   var caught=kind==='raid'||kind==='anger';
   var liquid=S.lots*S.price*0.85,shortCost=S.shortLots*S.price*1.15-S.shortRev,final=caught?0:G.cash+liquid-S.shortLots*S.price*1.15,score=final-M.budget;
@@ -890,7 +936,7 @@ function freeEnd(kind){hap(1);
   var st=add(bt,'button','sec','Ana menü');st.onclick=intro;
   $('ov').hidden=false;
 }
-function gameOver(kind){hap(1);
+function gameOver(kind){$('dlg').className='dlg';hap(1);
   if(G.mode==='free'){freeEnd(kind);return;}
   G.over=true;paused=true;var D=$('dlg');D.innerHTML='';
   var full=kind==='final'||kind==='jet'||kind==='quit';
@@ -938,7 +984,7 @@ async function fetchLB(mode){
     return {rows:snap.docs.map(function(d){var x=d.data()||{};return {id:d.id,name:x.name,money:x.money||0,victims:x.victims||0,days:x.days||0,stock:x.stock||''};}),shared:true};}}catch(e){}
   return {rows:localList(mode),shared:false};
 }
-function showLB(notice,back,mine,mode){
+function showLB(notice,back,mine,mode){$('dlg').className='dlg';
   paused=true;var D=$('dlg');D.innerHTML='';var free=mode==='free';
   add(D,'div','eyebrow','Liderlik tablosu · '+(free?'serbest mod':'hikâye modu'));add(D,'h2','',free?'En kârlı tahtacılar':'En büyük vurgunlar').style.color='var(--gold)';
   if(notice)add(D,'p','fine',notice);
@@ -984,6 +1030,6 @@ setInterval(step,TICK);
 </script>
 
 <script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
-<!-- build 2700bf80fe -->
+<!-- build 19bf44ddae -->
 </body>
 </html>
