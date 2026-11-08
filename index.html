@@ -78,6 +78,16 @@ h3{font-family:var(--f-num);font-weight:500;font-size:11px;letter-spacing:.12em;
 .phase span{padding:4px 8px;border:1px solid var(--line);border-radius:4px;color:var(--mute)}
 .phase span.on{background:var(--gold);color:#241a00;border-color:var(--gold)}
 .chclock{display:inline-flex;align-items:center;gap:4px;align-self:center;font-family:var(--f-num);font-size:13px;padding:3px 9px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--fg)}
+.st b .pg{color:var(--mute);font-size:.8em}
+.st b.hit{color:var(--up)}.st b.hit .pg{color:var(--up)}
+.chpause{display:inline-flex;align-items:center;justify-content:center;align-self:center;width:30px;height:30px;padding:0;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--fg)}
+.chpause .ms{font-size:18px}
+.chpause.on{background:var(--gold);border-color:var(--gold);color:#241a00}
+.pausedov{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;background:rgba(10,14,30,.78);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);border-radius:0 0 10px 10px}
+.pausedov>.ms{font-size:46px;color:var(--gold)}
+.pausedov b{font-family:var(--f-disp);font-weight:400;font-size:20px}
+.pausedov small{color:var(--mute);font-size:13px}
+.pausedov .go{display:inline-flex;align-items:center;gap:6px;margin-top:6px}
 .chclock .ms{font-size:15px;color:var(--gold)}
 .chclock b{font-variant-numeric:tabular-nums}
 .chclock.late{background:rgba(255,82,82,.16);border-color:var(--siren);color:var(--siren);animation:blink 1s steps(2) infinite}
@@ -385,7 +395,7 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
     <div class="brand"><div class="logo">TERE <span>YATIRIM</span></div><div class="daypill"><span class="ms">calendar_month</span>Gün <b id="day">1/5</b></div></div>
     <div class="stats">
       <div class="st"><small><span class="ms">account_balance_wallet</span>Kasa</small><b id="cash">₺0</b></div>
-      <div class="st"><small><span class="ms">trending_up</span>Bugünkü kâr</small><b id="pnl" class="up">₺0</b></div>
+      <div class="st"><small><span class="ms">trending_up</span><span id="pnlLbl">Kâr / min. kâr</span></small><b id="pnl" class="up">₺0</b></div>
       <div class="st gold"><small><span class="ms">flight_takeoff</span>Kaçış fonu</small><b id="abroad">₺0</b></div>
       <div class="st"><small><span class="ms" style="color:var(--siren)">radar</span>SPK radarı<em id="vRadar"></em></small><div class="meter"><i id="mRadar" style="background:var(--siren)"></i><b class="lim" id="lRadar"></b></div></div>
       <div class="st"><small><span class="ms" style="color:var(--anger)">groups</span>Halk öfkesi<em id="vAnger"></em></small><div class="meter"><i id="mAnger" style="background:var(--anger)"></i><b class="lim" id="lAnger"></b></div></div>
@@ -404,11 +414,12 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 
   <div class="p chart">
     <div class="ch-h">
-      <span class="tkb"><span class="ms" style="font-size:14px">candlestick_chart</span><span id="tk">—</span></span><span class="px" id="px">₺0</span><span id="chg">0%</span><span class="chclock" id="chClock" aria-label="Seans kapanışına kalan süre"><span class="ms">timer</span><b id="chClockT">0:00</b></span>
+      <span class="tkb"><span class="ms" style="font-size:14px">candlestick_chart</span><span id="tk">—</span></span><span class="px" id="px">₺0</span><span id="chg">0%</span><span class="chclock" id="chClock" aria-label="Seans kapanışına kalan süre"><span class="ms">timer</span><b id="chClockT">0:00</b></span><button class="chpause" id="chPause" aria-label="Seansı durdur"><span class="ms">pause</span></button>
       <small id="nm"></small>
       <div class="phase" aria-label="Operasyon aşaması"><span id="ph0">1 TOPLA</span><span id="ph1">2 POMPALA</span><span id="ph2">3 BOŞALT</span></div>
     </div>
     <div class="cv"><canvas id="cv" aria-label="Görevdeki hissenin canlı mum grafiği"></canvas>
+      <div class="pausedov" id="pausedOv" hidden><span class="ms">pause_circle</span><b>Seans durduruldu</b><small>Zaman, fiyat ve operasyonlar bekliyor.</small><button class="go" id="resumeBtn"><span class="ms">play_arrow</span>Devam et</button></div>
       <div class="breaking" id="breaking" hidden role="alert"><b>SON DAKİKA</b><span id="bkText"></span><em id="bkPct"></em></div></div>
   </div>
 
@@ -546,7 +557,7 @@ function updatePhases(){var s=S;
 function newRun(mode){G={mode:mode||'story',day:0,abroad:0,radar:0,anger:0,press:4,victims:0,totalPnl:0,over:false,retries:0};}
 function startDay(i){
   G.day=i;M=G.mode==='free'?G.freeM:MISSIONS[i];S=mkStock(M);
-  G.cash=M.budget;G.pnl=0;G.tick=0;G.cds={};G.use={};G.ev={};
+  G.cash=M.budget;G.pnl=0;G.tick=0;G.cds={};G.use={};G.ev={};userPaused=false;
   var T=dayT();G.shocks=[Math.round(T*(0.12+Math.random()*0.25)),Math.round(T*(0.45+Math.random()*0.35))];if(G.mode==='free')G.shocks.push(Math.round(T*(0.3+Math.random()*0.5)));
   if($('breaking'))$('breaking').hidden=true;
   G.radar=Math.max(M.radarMin||0,G.radar*0.5);G.anger=G.anger*0.5;G.press=G.press*0.5;
@@ -842,7 +853,7 @@ function buildOps(){var E=$('ops');E.innerHTML='';var prev=G.mode!=='free'&&G.da
 function ui(){
   var s=S;
   $('day').textContent=(G.day+1)+'/'+MISSIONS.length;$('cash').textContent=money(G.cash);$('abroad').textContent=money(G.abroad);
-  var p=$('pnl');p.textContent=money(G.pnl);p.className=G.pnl>=0?'up':'down';
+  var p=$('pnl');p.innerHTML='';add(p,'span','',money(G.pnl));if(G.mode!=='free'){add(p,'span','pg',' / '+money(M.goal));}p.className=G.mode!=='free'&&G.pnl>=M.goal?'hit':G.pnl>=0?'up':'down';$('pnlLbl').textContent=G.mode==='free'?'Net kâr':'Kâr / min. kâr';
   $('mRadar').style.width=G.radar+'%';$('mPress').style.width=G.press+'%';$('mAnger').style.width=G.anger+'%';$('mHype').style.width=s.hype+'%';
   var fl=$('mFlow'),fv=s.flow||0;fl.style.width=Math.abs(fv)*50+'%';fl.style.left=fv>=0?'50%':(50+fv*50)+'%';fl.style.background=fv>=0?'var(--up)':'var(--down)';
   $('vRadar').textContent='%'+Math.round(G.radar)+' / '+M.radar;$('vAnger').textContent='%'+Math.round(G.anger)+' / '+M.anger;$('vPress').textContent='%'+Math.round(G.press);
@@ -1046,7 +1057,11 @@ function showLB(notice,back,mine,mode){$('dlg').className='dlg';
   });
 }
 
-function setPauseLabel(){$('bPause').innerHTML=paused?'<span class="ms">play_arrow</span>Devam':'<span class="ms">pause</span>Durdur';}
+var userPaused=false;
+function setPauseLabel(){$('bPause').innerHTML=paused?'<span class="ms">play_arrow</span>Devam':'<span class="ms">pause</span>Durdur';
+  if(!paused)userPaused=false;var cp=$('chPause');if(cp){cp.classList.toggle('on',userPaused);cp.innerHTML='<span class="ms">'+(userPaused?'play_arrow':'pause')+'</span>';cp.setAttribute('aria-label',userPaused?'Seansa devam et':'Seansı durdur');}
+  var po=$('pausedOv');if(po)po.hidden=!(userPaused&&G&&!G.over);}
+function togglePause(){if(!G||G.over||!$('ov').hidden)return;if(userPaused){userPaused=false;paused=false;}else if(!paused){userPaused=true;paused=true;}setPauseLabel();}
 
 /* ---------- bağlantılar ---------- */
 $('bBuy').onclick=buy;$('bSell').onclick=sell;$('mbBuy').onclick=buy;$('mbSell').onclick=sell;
@@ -1057,9 +1072,9 @@ document.body.dataset.tab='chart';
 function setLot(v){lotSize=v;[].forEach.call($('lotsel').children,function(x){x.classList.toggle('on',+x.dataset.l===v);});$('mbLot').textContent=(v>=1e6?(v/1e6)+'M':(v/1e3)+'K')+' lot';}
 $('mbLot').onclick=function(){setLot(LOTS[(LOTS.indexOf(lotSize)+1)%LOTS.length]);};
 $('bJet').onclick=function(){if(G.over||paused)return;modal({t:'Jete binmek üzeresin',p:'Seans akmaya devam ediyor. Kaçış fonunda '+money(G.abroad)+' var. Kasadaki '+money(G.cash)+' ve elindeki hisseler geride kalır. Emin misin?',o:[['✈ Kalk, gidiyoruz','Oyun biter, skor: '+money(G.abroad),function(){gameOver('jet');}],['Biraz daha kalayım','',function(){}]]});};
-$('bPause').onclick=function(){if(G.over||!$('ov').hidden)return;paused=!paused;setPauseLabel();};
+$('bPause').onclick=togglePause;$('chPause').onclick=togglePause;$('resumeBtn').onclick=togglePause;
 $('lotsel').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;setLot(+b.dataset.l);});
-addEventListener('keydown',function(e){if(!$('ov').hidden||e.target.tagName==='INPUT')return;if(e.key==='a'||e.key==='A')buy();if(e.key==='s'||e.key==='S')sell();});
+addEventListener('keydown',function(e){if(!$('ov').hidden||e.target.tagName==='INPUT')return;if(e.key==='p'||e.key==='P'||e.key===' '){e.preventDefault();togglePause();return;}if(paused)return;if(e.key==='a'||e.key==='A')buy();if(e.key==='s'||e.key==='S')sell();});
 addEventListener('resize',size);
 
 window.__tere={short:shortSell,cover:cover,startFree:function(){startFree();},st:function(){return {G:G,S:S,M:M,paused:paused};},buy:buy,sell:sell,op:runOp,close:closeDay,brief:brief,newRun:newRun,start:function(i){startDay(i);$('ov').hidden=true;paused=false;},step:step};
@@ -1070,6 +1085,6 @@ setInterval(step,TICK);
 </script>
 
 <script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
-<!-- build 819970b1e2 -->
+<!-- build 5cd8b395f9 -->
 </body>
 </html>
