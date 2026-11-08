@@ -307,6 +307,15 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .m-sm .ms{font-size:18px;color:var(--gold)}
 .m-fine{margin-top:16px !important}
 @media (max-width:700px){
+  .app{display:flex !important;flex-direction:column;gap:8px}
+  .app>.top{flex:none}
+  .chart,.feed,.side,.mis{display:none}
+  body[data-tab="chart"] .chart{display:flex;flex:none;align-self:stretch}
+  body[data-tab="chart"] .feed{display:flex;flex:1 1 0;min-height:0;overflow:hidden}
+  body[data-tab="chart"] .feed .msgs{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  body[data-tab="ops"] .side{display:flex;flex:1 1 0;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  body[data-tab="mis"] .mis{display:flex;flex:1 1 0;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .cv{height:max(230px,min(44vh,400px))}
   .mhide{display:none}
   .side>.box:first-child{order:2}
   .ops{display:grid;grid-template-columns:1fr 1fr;gap:6px}
@@ -329,9 +338,6 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
     padding:max(6px,env(safe-area-inset-top,0px)) max(8px,env(safe-area-inset-right,0px)) calc(124px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
   .mis,.side,.feed{grid-area:panel;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;max-height:none}
   .side{gap:8px}
-  body:not([data-tab="mis"]) .mis{display:none}
-  body:not([data-tab="feed"]) .feed{display:none}
-  body[data-tab="mis"] .side,body[data-tab="feed"] .side{display:none}
   .feed .msgs{overflow:visible}
   .top{grid-template-columns:1fr auto;padding:8px 10px;gap:6px 8px}
   .brand{flex-direction:row;align-items:center;gap:8px}
@@ -339,7 +345,6 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
   .stats{gap:4px}.st{padding:5px 7px;gap:3px;border-radius:8px}
   .jet{padding:6px 10px;font-size:11px}
   .ch-h{padding:8px 10px}
-  .cv{height:max(190px,min(30vh,300px))}
   .mobbar{flex-direction:column;gap:8px;padding-top:6px}
   .mobbar .tabs{display:flex;gap:4px}
   .mobbar .tabs button{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 4px;border-radius:9px;background:transparent;border:1px solid transparent;color:var(--mute);font-size:13px;font-weight:500;position:relative}
@@ -406,7 +411,7 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
   <div class="p feed"><h3><span class="ms">forum</span>Halkın akışı</h3><div class="msgs" id="msgs" aria-live="polite"></div></div>
 </div>
 
-<div class="mobbar" id="mobbar"><nav class="tabs" id="tabs" aria-label="Paneller"><button data-tab="ops" class="on"><span class="ms">bolt</span>İşlem</button><button data-tab="mis"><span class="ms">assignment</span>Görev</button><button data-tab="feed"><span class="ms">forum</span>Akış<i id="feedBadge" hidden></i></button></nav><div class="mb-row"><div class="mb-px"><small id="mbTk">—</small><b id="mbPx">₺0</b></div><button class="mb-lot" id="mbLot" aria-label="Lot büyüklüğü">1M lot</button><button class="buy" id="mbBuy">AL</button><button class="sell" id="mbSell">SAT</button></div></div>
+<div class="mobbar" id="mobbar"><nav class="tabs" id="tabs" aria-label="Sayfalar"><button data-tab="chart" class="on"><span class="ms">candlestick_chart</span>Grafik<i id="feedBadge" hidden></i></button><button data-tab="ops"><span class="ms">bolt</span>İşlem</button><button data-tab="mis"><span class="ms">assignment</span>Görev</button></nav><div class="mb-row"><div class="mb-px"><small id="mbTk">—</small><b id="mbPx">₺0</b></div><button class="mb-lot" id="mbLot" aria-label="Lot büyüklüğü">1M lot</button><button class="buy" id="mbBuy">AL</button><button class="sell" id="mbSell">SAT</button></div></div>
 
 <div class="ov" id="ov"><div class="dlg" id="dlg"></div></div>
 
@@ -544,7 +549,7 @@ function msg(kind,who,text){if(text===lastMsg)return;lastMsg=text;var b=$('msgs'
   d.innerHTML='<span class="av"></span><div class="mb"><div class="mh"><b class="who"></b><span class="chip"></span><span class="t"></span></div><div class="tx"></div></div>';
   var ini=who.replace(/[^A-Za-zÇĞİÖŞÜçğıöşü ]/g,' ').trim().split(/\s+/);d.querySelector('.av').textContent=((ini[0]||'?')[0]+((ini[1]||'')[0]||'')).toUpperCase();
   d.querySelector('.who').textContent=who;d.querySelector('.chip').textContent=CHIP[kind]||'';d.querySelector('.tx').textContent=text;d.querySelector('.t').textContent=clockText();
-  b.prepend(d);if(document.body.dataset.tab!=='feed'&&(kind==='kap'||kind==='spk'||kind==='news')){unread++;var fb=document.getElementById('feedBadge');if(fb){fb.textContent=unread>9?'9+':unread;fb.hidden=false;}}while(b.children.length>40)b.lastChild.remove();}
+  b.prepend(d);if(document.body.dataset.tab!=='chart'&&(kind==='kap'||kind==='spk'||kind==='news')){unread++;var fb=document.getElementById('feedBadge');if(fb){fb.textContent=unread>9?'9+':unread;fb.hidden=false;}}while(b.children.length>40)b.lastChild.remove();}
 function flag(label,col){S.flags.push({i:S.candles.length,label:label,col:col});}
 function clockText(){if(!G||G.tick==null)return '';var m=Math.floor(G.tick/dayT()*480),h=10+Math.floor(m/60);return String(h).padStart(2,'0')+':'+String(m%60).padStart(2,'0');}
 
@@ -1011,9 +1016,9 @@ function setPauseLabel(){$('bPause').innerHTML=paused?'<span class="ms">play_arr
 /* ---------- bağlantılar ---------- */
 $('bBuy').onclick=buy;$('bSell').onclick=sell;$('mbBuy').onclick=buy;$('mbSell').onclick=sell;
 var LOTS=[250000,1000000,4000000],unread=0;
-function setTab(t){document.body.dataset.tab=t;[].forEach.call($('tabs').children,function(b){b.classList.toggle('on',b.dataset.tab===t);});if(t==='feed'){unread=0;$('feedBadge').hidden=true;}}
+function setTab(t){document.body.dataset.tab=t;[].forEach.call($('tabs').children,function(b){b.classList.toggle('on',b.dataset.tab===t);});if(t==='chart'){unread=0;$('feedBadge').hidden=true;size();}}
 $('tabs').addEventListener('click',function(e){var b=e.target.closest('button');if(b)setTab(b.dataset.tab);});
-document.body.dataset.tab='ops';
+document.body.dataset.tab='chart';
 function setLot(v){lotSize=v;[].forEach.call($('lotsel').children,function(x){x.classList.toggle('on',+x.dataset.l===v);});$('mbLot').textContent=(v>=1e6?(v/1e6)+'M':(v/1e3)+'K')+' lot';}
 $('mbLot').onclick=function(){setLot(LOTS[(LOTS.indexOf(lotSize)+1)%LOTS.length]);};
 $('bJet').onclick=function(){if(G.over||paused)return;modal({t:'Jete binmek üzeresin',p:'Seans akmaya devam ediyor. Kaçış fonunda '+money(G.abroad)+' var. Kasadaki '+money(G.cash)+' ve elindeki hisseler geride kalır. Emin misin?',o:[['✈ Kalk, gidiyoruz','Oyun biter, skor: '+money(G.abroad),function(){gameOver('jet');}],['Biraz daha kalayım','',function(){}]]});};
@@ -1030,6 +1035,6 @@ setInterval(step,TICK);
 </script>
 
 <script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
-<!-- build 19bf44ddae -->
+<!-- build da163188ca -->
 </body>
 </html>
