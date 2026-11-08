@@ -77,6 +77,12 @@ h3{font-family:var(--f-num);font-weight:500;font-size:11px;letter-spacing:.12em;
 .phase{margin-left:auto;display:flex;gap:4px;font-family:var(--f-num);font-size:10px;flex-wrap:wrap}
 .phase span{padding:4px 8px;border:1px solid var(--line);border-radius:4px;color:var(--mute)}
 .phase span.on{background:var(--gold);color:#241a00;border-color:var(--gold)}
+.chclock{display:inline-flex;align-items:center;gap:4px;align-self:center;font-family:var(--f-num);font-size:13px;padding:3px 9px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--fg)}
+.chclock .ms{font-size:15px;color:var(--gold)}
+.chclock b{font-variant-numeric:tabular-nums}
+.chclock.late{background:rgba(255,82,82,.16);border-color:var(--siren);color:var(--siren);animation:blink 1s steps(2) infinite}
+.chclock.late .ms{color:var(--siren)}
+@media (prefers-reduced-motion:reduce){.chclock.late{animation:none}}
 .phase span.done{color:var(--up);border-color:rgba(47,208,140,.5)}
 .phase span.done::before{content:"✓ "}
 .cv{position:relative;height:440px}
@@ -311,11 +317,13 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
   .app>.top{flex:none}
   .chart,.feed,.side,.mis{display:none}
   body[data-tab="chart"] .chart{display:flex;flex:none;align-self:stretch}
-  body[data-tab="chart"] .feed{display:flex;flex:1 1 0;min-height:0;overflow:hidden}
-  body[data-tab="chart"] .feed .msgs{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  body[data-tab="chart"] .app{overflow-y:auto;-webkit-overflow-scrolling:touch}
+  body[data-tab="chart"] .feed{display:flex;flex:1 0 auto;height:0;min-height:240px;overflow:hidden}
+  body[data-tab="chart"] .feed .msgs{flex:1 1 0;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y}
+  .top .logo{display:none}
   body[data-tab="ops"] .side{display:flex;flex:1 1 0;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
   body[data-tab="mis"] .mis{display:flex;flex:1 1 0;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
-  .cv{height:max(230px,min(44vh,400px))}
+  .cv{height:max(190px,min(34vh,340px))}
   .mhide{display:none}
   body:not([data-tab="chart"]) .mobbar .mb-row{display:none}
   body:not([data-tab="chart"]) .app{padding-bottom:calc(64px + env(safe-area-inset-bottom,0px))}
@@ -383,7 +391,7 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 
   <div class="p chart">
     <div class="ch-h">
-      <span class="tkb"><span class="ms" style="font-size:14px">candlestick_chart</span><span id="tk">—</span></span><span class="px" id="px">₺0</span><span id="chg">0%</span>
+      <span class="tkb"><span class="ms" style="font-size:14px">candlestick_chart</span><span id="tk">—</span></span><span class="px" id="px">₺0</span><span id="chg">0%</span><span class="chclock" id="chClock" aria-label="Seans kapanışına kalan süre"><span class="ms">timer</span><b id="chClockT">0:00</b></span>
       <small id="nm"></small>
       <div class="phase" aria-label="Operasyon aşaması"><span id="ph0">1 TOPLA</span><span id="ph1">2 POMPALA</span><span id="ph2">3 BOŞALT</span></div>
     </div>
@@ -837,7 +845,7 @@ function ui(){
   $('share').textContent='%'+Math.round(s.lots/s.float*100);$('publ').textContent=tl.format(s.pubLots);
   var st=[s.collected,s.pumped,s.dumped],cur=st.indexOf(false);for(var i=0;i<3;i++)$('ph'+i).className=st[i]?'done':i===cur?'on':'';
   var left=Math.max(0,dayT()-G.tick)*TICK/1000;$('clock').textContent=String(Math.floor(left/60)).padStart(2,'0')+':'+String(Math.floor(left%60)).padStart(2,'0');
-  $('clock').style.color=left<30?'var(--siren)':'';
+  $('clock').style.color=left<30?'var(--siren)':'';$('chClockT').textContent=$('clock').textContent;$('chClock').classList.toggle('late',left<30);
   var gl=$('goals');gl.innerHTML='';goalState().forEach(function(x){var li=add(gl,'li',x.warn?'warn':x.ok?'ok':'no');add(li,'i','',x.warn?'!':x.ok?'✓':'○');add(li,'span','',x.t);add(li,'small','',x.v);});
   var bc=$('bClose');bc.className='closebtn'+(done()?' ready':'');bc.textContent=G.mode==='free'?'Seans 5 dakika sürer. Kapanışta elinde kalan mal %15 iskontoyla bozdurulur.':'Tüm hedefler tamamlanınca seans otomatik kapanır. Süre biterse görev başarısız olur.';
   document.querySelectorAll('.op').forEach(function(b){var o=OPS[b.dataset.op],cd=G.cds[b.dataset.op]||0;
@@ -1037,6 +1045,6 @@ setInterval(step,TICK);
 </script>
 
 <script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
-<!-- build 6db0384469 -->
+<!-- build 3298d5bb33 -->
 </body>
 </html>
