@@ -317,6 +317,8 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
   body[data-tab="mis"] .mis{display:flex;flex:1 1 0;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
   .cv{height:max(230px,min(44vh,400px))}
   .mhide{display:none}
+  body:not([data-tab="chart"]) .mobbar .mb-row{display:none}
+  body:not([data-tab="chart"]) .app{padding-bottom:calc(64px + env(safe-area-inset-bottom,0px))}
   .side>.box:first-child{order:2}
   .ops{display:grid;grid-template-columns:1fr 1fr;gap:6px}
   .opg{grid-column:1/-1;margin:4px 0 0}
@@ -1035,6 +1037,6 @@ setInterval(step,TICK);
 </script>
 
 <script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
-<!-- build da163188ca -->
+<!-- build 6db0384469 -->
 </body>
 </html>
