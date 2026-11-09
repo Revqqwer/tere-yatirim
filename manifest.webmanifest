@@ -1,6 +1,6 @@
 {
-  "name": "TERE YATIRIM",
-  "short_name": "TERE",
+  "name": "BORSADA VURGUN",
+  "short_name": "Vurgun",
   "description": "Hiciv borsa oyunu: hisseyi pompala, halka boşalt, SPK'dan kaç.",
   "lang": "tr",
   "start_url": "./",

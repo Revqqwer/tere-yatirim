@@ -7,15 +7,16 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="TERE">
-<title>TERE YATIRIM</title>
+<meta name="apple-mobile-web-app-title" content="Vurgun">
+<title>Borsada Vurgun</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" type="image/png" href="icon-192.png">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif;-webkit-text-size-adjust:100%}img{max-width:100%}[hidden]{display:none!important}</style>
+<script>window.BV_CFG={"admobRewardedIos": "ca-app-pub-3940256099942544/1712485313", "adTesting": true, "testDevices": []};</script>
 </head>
 <body>
-<title>TERE Terminal</title>
+<title>Borsada Vurgun</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Rubik:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..24,400..600,0..1,0&display=block">
@@ -80,6 +81,25 @@ h3{font-family:var(--f-num);font-weight:500;font-size:11px;letter-spacing:.12em;
 .chclock{display:inline-flex;align-items:center;gap:4px;align-self:center;font-family:var(--f-num);font-size:13px;padding:3px 9px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--fg)}
 .st b .pg{color:var(--mute);font-size:.8em}
 .st b.hit{color:var(--up)}.st b.hit .pg{color:var(--up)}
+.evcards{position:fixed;z-index:30;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 12px);width:min(420px,calc(100% - 24px));display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.evc{pointer-events:auto;display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:rgba(18,23,44,.96);border:1px solid var(--line);box-shadow:0 14px 34px -12px rgba(0,0,0,.7);animation:evIn .35s cubic-bezier(.2,1.3,.5,1);transition:opacity .4s,transform .4s}
+.evc.out{opacity:0;transform:translateY(-10px)}
+.evc .evi{flex:none;width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:24px;background:rgba(255,255,255,.08)}
+.evc .evt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.evc .evt b{font-family:var(--f-disp);font-weight:400;font-size:14px;letter-spacing:.02em}
+.evc .evt small{font-size:12px;color:#c9d0e2;line-height:1.35}
+.evc em{flex:none;font-style:normal;font-family:var(--f-num);font-weight:700;font-size:12px;padding:3px 8px;border-radius:999px;background:rgba(255,255,255,.08)}
+.evc.bad{border-color:rgba(255,79,102,.55)}.evc.bad .evi{background:rgba(255,79,102,.18);color:var(--down)}.evc.bad em{color:var(--down)}
+.evc.good{border-color:rgba(47,208,140,.5)}.evc.good .evi{background:rgba(47,208,140,.16);color:var(--up)}.evc.good em{color:var(--up)}
+.evc.info .evi{background:rgba(245,196,81,.15);color:var(--gold)}
+.evc.kap{border-color:rgba(58,160,255,.55)}.evc.kap .evi{background:rgba(58,160,255,.18);color:var(--kap)}
+@keyframes evIn{from{transform:translateY(-16px) scale(.96);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.evc{animation:none}}
+.lives{display:inline-flex;gap:1px}.lives .ms{font-size:16px;color:rgba(255,255,255,.18);font-variation-settings:"FILL" 1,"wght" 500,"opsz" 20}.lives .ms.on{color:var(--down)}
+.brand{flex-wrap:wrap}
+.m-btn.ch.lock{opacity:.5}.ch-n.ms{font-family:"Material Symbols Rounded";font-size:18px}
+.adph{display:flex;flex-direction:column;align-items:center;gap:6px;padding:28px 16px;margin:8px 0 14px;border-radius:14px;background:linear-gradient(140deg,rgba(245,196,81,.18),rgba(201,139,255,.14));border:1px dashed rgba(245,196,81,.5);text-align:center}
+.adph .ms{font-size:40px;color:var(--gold)}.adph b{font-family:var(--f-disp);font-weight:400;font-size:20px}.adph small{color:var(--mute)}
 .chpause{display:inline-flex;align-items:center;justify-content:center;align-self:center;width:30px;height:30px;padding:0;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--fg)}
 .chpause .ms{font-size:18px}
 .chpause.on{background:var(--gold);border-color:var(--gold);color:#241a00}
@@ -304,8 +324,8 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .dlg.menu{max-width:440px;text-align:center;padding:28px 22px 18px;background:radial-gradient(420px 260px at 50% 0%,rgba(245,196,81,.18),transparent 70%),linear-gradient(180deg,#1d1747,#111733)}
 .m-hero{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:22px}
 .m-logo{display:flex;flex-direction:column;font-family:var(--f-disp);line-height:.95}
-.m-logo span:first-child{font-size:clamp(54px,17vw,84px);color:var(--gold);text-shadow:0 0 30px rgba(245,196,81,.45)}
-.m-logo span:last-child{font-size:clamp(24px,7.5vw,36px);color:var(--fg);letter-spacing:.08em}
+.m-logo span:first-child{font-size:clamp(40px,12.5vw,64px);color:var(--gold);text-shadow:0 0 30px rgba(245,196,81,.45)}
+.m-logo span:last-child{font-size:clamp(40px,12.5vw,64px);color:var(--fg);letter-spacing:.02em}
 .m-spark{display:flex;align-items:flex-end;gap:5px;height:56px}
 .m-spark i{display:block;width:12px;border-radius:2px;background:var(--up)}.m-spark i.r{background:var(--down)}
 .m-tag{margin:0;color:var(--fg);font-weight:500;font-size:15px}
@@ -392,7 +412,7 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 
 <div class="app">
   <div class="p top">
-    <div class="brand"><div class="logo">TERE <span>YATIRIM</span></div><div class="daypill"><span class="ms">calendar_month</span>Gün <b id="day">1/5</b></div></div>
+    <div class="brand"><div class="logo">BORSADA <span>VURGUN</span></div><div class="daypill"><span class="ms">calendar_month</span>Bölüm <b id="day">1/10</b></div><div class="lives" id="lives" aria-label="Canlar"></div></div>
     <div class="stats">
       <div class="st"><small><span class="ms">account_balance_wallet</span>Kasa</small><b id="cash">₺0</b></div>
       <div class="st"><small><span class="ms">trending_up</span><span id="pnlLbl">Kâr / min. kâr</span></small><b id="pnl" class="up">₺0</b></div>
@@ -416,7 +436,7 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
     <div class="ch-h">
       <span class="tkb"><span class="ms" style="font-size:14px">candlestick_chart</span><span id="tk">—</span></span><span class="px" id="px">₺0</span><span id="chg">0%</span><span class="chclock" id="chClock" aria-label="Seans kapanışına kalan süre"><span class="ms">timer</span><b id="chClockT">0:00</b></span><button class="chpause" id="chPause" aria-label="Seansı durdur"><span class="ms">pause</span></button>
       <small id="nm"></small>
-      <div class="phase" aria-label="Operasyon aşaması"><span id="ph0">1 TOPLA</span><span id="ph1">2 POMPALA</span><span id="ph2">3 BOŞALT</span></div>
+      <div class="phase" id="phase" aria-label="Operasyon aşaması"></div>
     </div>
     <div class="cv"><canvas id="cv" aria-label="Görevdeki hissenin canlı mum grafiği"></canvas>
       <div class="pausedov" id="pausedOv" hidden><span class="ms">pause_circle</span><b>Seans durduruldu</b><small>Zaman, fiyat ve operasyonlar bekliyor.</small><button class="go" id="resumeBtn"><span class="ms">play_arrow</span>Devam et</button></div>
@@ -446,6 +466,8 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 </div>
 
 <div class="mobbar" id="mobbar"><nav class="tabs" id="tabs" aria-label="Sayfalar"><button data-tab="chart" class="on"><span class="ms">candlestick_chart</span>Grafik<i id="feedBadge" hidden></i></button><button data-tab="ops"><span class="ms">bolt</span>İşlem</button><button data-tab="mis"><span class="ms">assignment</span>Görev</button></nav><div class="mb-row"><div class="mb-px"><small id="mbTk">—</small><b id="mbPx">₺0</b></div><button class="mb-lot" id="mbLot" aria-label="Lot büyüklüğü">1M lot</button><button class="buy" id="mbBuy">AL</button><button class="sell" id="mbSell">SAT</button></div></div>
+
+<div class="evcards" id="cards" aria-live="polite"></div>
 
 <div class="ov" id="ov"><div class="dlg" id="dlg"></div></div>
 
@@ -483,26 +505,36 @@ function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
 
 /* ---------- görevler ---------- */
 var MISSIONS=[
- {t:'SISCM',n:'Şişme Cam',p:3.10,f:60e6,budget:50e6,goal:15e6,radar:60,anger:40,hm:1,vol:1,
-  ops:['tg','bot','inf','wash','short','spoof','infneg','hide'],
+ {type:'pump',t:'SISCM',n:'Şişme Cam',p:3.10,f:60e6,budget:50e6,goal:15e6,radar:60,anger:40,hm:1,vol:1,ops:['tg','bot','inf','wash','short','spoof','infneg','hide'],
   task:'50 milyon TL\'lik Şişme Cam al. Telegram ve influencerlarla fiyatı kaldır, malı halka boşalt, bundan maksimum kârı et. SPK uyanmasın, halk da uyanmasın.',
-  brief:'Kimsenin tanımadığı küçük bir cam fabrikası. Önce sessizce mal topla, sonra fiyatı mor hedef çizgisine kaldır, halk alırken malı boşalt.'},
- {t:'OZBLN',n:'ÖzBalon Denizcilik',p:7.80,f:80e6,budget:150e6,goal:60e6,radar:65,anger:50,hm:1,vol:1,
-  ops:['tg','bot','inf','news','fake','kap','wash','short','spoof','infneg','kapneg','hide'],
-  task:'150 milyon TL\'lik ÖzBalon Denizcilik topla. KAP\'a bir "dev navlun sözleşmesi" çak, fiyatı uçur, malı halkın eline tutuştur. En az 60 milyon kâr istiyoruz. Yalan büyükse çöküş de büyük olur, dikkat.',
-  brief:'Tek bir paslı gemisi olan bir denizcilik şirketi. Artık elinde KAP var: "dev navlun sözleşmesi" gibi bir açıklama her şeyi değiştirir. Ama yalan büyüdükçe çöküş de sert olur.'},
- {t:'TERE',n:'TERE Yatırım',p:2.40,f:120e6,budget:40e6,startLots:40e6,startCost:0.5,goal:100e6,pump:1.4,radar:70,anger:55,hm:1,vol:1,
-  ops:['tg','bot','inf','news','fake','kap','tv','star','wash','short','spoof','infneg','kapneg','shortrep','fon','hide','law'],
-  task:'Sıra kendi hissemiz TERE\'de. Elindeki 40 milyon lot kurucu payını yüksekten halka sat, 40 milyon nakitle de destek alımı yap. En az 100 milyon kâr. Ünlü reklam yüzü artık bizimle.',
-  brief:'Sıra kendi şirketinde. Elinde 40 milyon lot kurucu payı var, maliyeti lot başı 50 kuruş. Hisseyi şişir ve kurucu paylarını halka sat. Ünlü reklam yüzü ve avukat ordusu artık emrinde.'},
- {t:'SISBN',n:'Şiş Bankası',p:0.85,f:320e6,budget:100e6,goal:45e6,radar:75,anger:60,hm:1.4,vol:1.6,
-  ops:['tg','bot','inf','news','fake','kap','tv','star','wash','tavan','short','spoof','infneg','kapneg','shortrep','fon','hide','law','pr'],
-  task:'100 milyon TL\'lik Şiş Bankası al. Halk "banka batmaz" diye gözü kapalı güveniyor, bunu sonuna kadar kullan. En az 45 milyon kâr, ama bankada panik başlarsa öfke çok hızlı büyür.',
-  brief:'Kimsenin şubesini görmediği küçük bir banka. Halk bankaya güvendiği için operasyonlar daha etkili. Ama fiyat iki yöne de sert oynuyor; geç kalırsan mal elinde kalır.'},
- {t:'GOLGE',n:'Gölge Enerji',p:5.50,f:90e6,budget:200e6,goal:60e6,radar:85,anger:70,hm:1,vol:1.1,radarMin:45,
-  ops:['tg','bot','inf','news','fake','kap','tv','star','wash','tavan','short','spoof','infneg','kapneg','shortrep','fon','hide','law','pr'],
-  task:'Son gün. 200 milyon TL\'lik Gölge Enerji al, son vurgunu yap, en az 60 milyon kâr et. Seans kapanınca jet kalkıyor, savcılık kapıda.',
-  brief:'Son gün. Savcılık dosyayı istedi, radar sabahtan yüksek. Son vurguna gir ve kârını al. Seans kapanınca jet seni bekliyor.'}];
+  brief:'Klasik vurgun: önce mal topla, sonra fiyatı mor hedef çizgisine kaldır, halk alırken malı boşalt.'},
+ {type:'pump',needKap:true,t:'OZBLN',n:'ÖzBalon Denizcilik',p:7.80,f:80e6,budget:150e6,goal:60e6,radar:65,anger:50,hm:1,vol:1,ops:['tg','bot','inf','news','fake','kap','wash','short','spoof','infneg','kapneg','hide'],
+  task:'150 milyon TL\'lik ÖzBalon Denizcilik topla. KAP\'a mutlaka bir "dev navlun sözleşmesi" çak, fiyatı uçur, malı halkın eline tutuştur. En az 60 milyon kâr.',
+  brief:'Bu bölümde KAP\'a en az bir yalan açıklama atman şart. Yalan büyüdükçe çöküş de sert olur.'},
+ {type:'stealth',stealth:0.3,t:'KUYRK',n:'Kuyruk Gıda',p:4.40,f:70e6,budget:120e6,goal:35e6,radar:50,anger:50,hm:1,vol:0.9,ops:['tg','bot','inf','news','fake','kap','wash','short','spoof','infneg','kapneg','hide'],
+  task:'Kuyruk Gıda\'nın tahtasının %30\'unu sessizce topla. SPK radarı bu sefer çok hassas: %50\'yi görürse kapına dayanır. Sonra pompala ve boşalt, en az 35 milyon kâr.',
+  brief:'Sessiz toplama bölümü: hızlı alım baskısı ve "TERE alıyor" haberleri radarı uyandırır. Küçük lotlarla, sabırla topla.'},
+ {type:'founder',t:'TERE',n:'TERE Yatırım',p:2.40,f:120e6,budget:40e6,startLots:40e6,startCost:0.5,goal:100e6,pump:1.4,radar:70,anger:55,hm:1,vol:1,ops:['tg','bot','inf','news','fake','kap','tv','star','wash','short','spoof','infneg','kapneg','shortrep','fon','hide','law'],
+  task:'Sıra kendi hissemiz TERE\'de. Elindeki 40 milyon lot kurucu payını yüksekten halka sat, 40 milyon nakitle de destek alımı yap. En az 100 milyon kâr.',
+  brief:'Elinde 40 milyon lot kurucu payı var, maliyeti lot başı 50 kuruş. Hisseyi şişir ve kurucu paylarını halka sat.'},
+ {type:'short',shortPct:0.15,drop:0.72,fund0:0.45,hype0:55,t:'SISBN',n:'Şiş Bankası',p:4.20,f:60e6,budget:60e6,goal:10e6,radar:70,anger:60,hm:1.2,vol:1.2,ops:['tg','bot','inf','news','fake','kap','tv','star','wash','tavan','short','spoof','infneg','kapneg','shortrep','fon','hide','law','pr'],
+  task:'Şiş Bankası\'nın balonu zaten şişmiş. Tahtanın %15\'i kadar açığa sat, "banka batıyor" söylentileriyle fiyatı çökert, dipten kapat. En az 10 milyon kâr.',
+  brief:'Ayı avı bölümü: bu sefer düşüşten kazanıyorsun. Elinde mal yokken SAT açığa satar, AL açığı kapatır. "Fiyatı düşür" operasyonları senin silahın.'},
+ {type:'ipo',t:'FISEK',n:'Fişek Enerji',p:2.80,f:50e6,budget:5e6,startLots:20e6,startCost:0.6,hype0:85,time:240,absorb:3.5,goal:34e6,radar:70,anger:55,hm:1,vol:1.3,ops:['tg','bot','inf','news','fake','kap','tv','star','wash','tavan','short','spoof','infneg','kapneg','shortrep','fon','hide','law','pr'],
+  task:'Fişek Enerji bugün halka arz oldu, herkes tahtada. Elindeki 20 milyon lotu ilgi sönmeden sat. Sadece 100 saniyen var! En az 34 milyon kâr.',
+  brief:'Halka arz bölümü: süre çok kısa, ilgi hızla sönüyor. Pompalamaya gerek yok, hızlı ama fiyatı çökertmeden sat.'},
+ {type:'defend',floor:0.85,t:'BALON',n:'Balon Teknoloji',p:6.00,f:60e6,budget:60e6,startLots:15e6,startCost:5.8,time:320,goal:0,radar:75,anger:60,hm:1,vol:1,ops:['tg','bot','inf','news','fake','kap','tv','star','wash','tavan','short','spoof','infneg','kapneg','shortrep','fon','hide','law','pr'],
+  task:'Balon Teknoloji\'deki dev pozisyonun bankada teminatta. Rakip fon tahtaya saldırıyor. Fiyat tabanın altına inerse bankalar her şeyini satar. Seans sonuna kadar fiyatı koru!',
+  brief:'Savunma bölümü: kâr hedefi yok, hayatta kal. Rakip fon aralıklarla sert satış yapacak; AL ve "Fiyatı yükselt" operasyonlarıyla grafikteki kırmızı TABAN çizgisinin üstünde kal.'},
+ {type:'twice',t:'ZIPZP',n:'Zıpzıp Oyuncak',p:2.20,f:50e6,budget:40e6,goal:22e6,pump:1.45,radar:75,anger:60,hm:1.1,vol:1.1,time:480,ops:['tg','bot','inf','news','fake','kap','tv','star','wash','tavan','short','spoof','infneg','kapneg','shortrep','fon','hide','law','pr'],
+  task:'Zıpzıp Oyuncak\'ta testere yapacağız: iki kez topla, iki kez pompala, iki kez boşalt. Halk ikinci seferde daha temkinli olacak. En az 22 milyon kâr.',
+  brief:'Testere bölümü: bir turu bitirince aşamalar sıfırlanır, aynı hissede ikinci turu yaparsın. Seans daha uzun.'},
+ {type:'pump',t:'KOPUK',n:'Köpük Kripto',p:0.85,f:320e6,budget:100e6,goal:45e6,radar:75,anger:60,hm:1.4,vol:1.8,ops:['tg','bot','inf','news','fake','kap','tv','star','wash','tavan','short','spoof','infneg','kapneg','shortrep','fon','hide','law','pr'],
+  task:'100 milyon TL\'lik Köpük Kripto al. Halk kripto diye her şeye atlıyor, bunu sonuna kadar kullan. En az 45 milyon kâr, ama geç kalırsan mal elinde patlar.',
+  brief:'Kripto çılgınlığı: operasyonlar daha etkili ama fiyat iki yöne de çok sert.'},
+ {type:'pump',t:'GOLGE',n:'Gölge Enerji',p:5.50,f:90e6,budget:200e6,goal:60e6,radar:85,anger:70,hm:1,vol:1.1,radarMin:45,ops:['tg','bot','inf','news','fake','kap','tv','star','wash','tavan','short','spoof','infneg','kapneg','shortrep','fon','hide','law','pr'],
+  task:'Son bölüm. 200 milyon TL\'lik Gölge Enerji al, son vurgunu yap, en az 60 milyon kâr et. Seans kapanınca jet kalkıyor, savcılık kapıda.',
+  brief:'Final: radar sabahtan yüksek. Son vurguna gir ve kârını al.'}];
 var OPS={
  tg:{g:'up',ic:'send',tn:'pump',n:'Telegram sinyal grubu',c:4e5,cd:18,d:'"Hedef 15 TL" mesajı · ilgi ↑'},
  inf:{g:'up',ic:'smartphone',tn:'pump',n:'Influencer\'a öde',c:2e6,cd:36,d:'"Ben de aldım" videosu · ilgi ↑↑'},
@@ -534,7 +566,7 @@ var halkDown=['%T neden düşüyor?? Bekliyoruz değil mi?','%T\'de ortalama dü
 var halkMad=['%T\'de dolandırıldık! Herkes şikâyet etsin!','TERE Yatırım hesap verecek, avukat tuttum.','Emekliliğimi %T\'ye kaptırdım, bunlar hırsız!','Yarın plazanın önünde buluşuyoruz.'];
 
 var TICK=420; /* hikâye seansı 420 tick ≈ 3 dk, serbest mod 714 tick ≈ 5 dk */
-function dayT(){return G&&G.mode==='free'?714:420;}
+function dayT(){return G&&G.mode==='free'?714:(M&&M.time)||420;}
 var ALLOPS=['tg','bot','inf','news','fake','kap','tv','star','wash','tavan','short','spoof','infneg','kapneg','shortrep','fon','hide','law','pr'];
 var FREE=[{t:'ZIPZP',n:'Zıpzıp Oyuncak',p:2.40,f:12e6},{t:'FISEK',n:'Fişek Enerji',p:4.10,f:10e6},{t:'BALON',n:'Balon Teknoloji',p:3.30,f:14e6},{t:'TIRIT',n:'Tırıt Gıda',p:5.60,f:9e6},{t:'SISBN',n:'Şiş Bankası',p:1.85,f:16e6}];
 function freeMission(){var b=pick(FREE);return {t:b.t,n:b.n,p:b.p*(0.85+Math.random()*0.3),f:b.f,budget:10e6,goal:0,radar:80,anger:70,hm:1.1,vol:1.2,ops:ALLOPS,free:true,
@@ -547,13 +579,33 @@ function mkStock(m){var s={t:m.t,n:m.n,fund:m.p,price:m.p,float:m.f,hype:3+Math.
   s.price=p;s.open0=p;s.cur={o:p,h:p,l:p,c:p,v:0};
   if(m.startLots){s.lots=m.startLots;s.cost=m.startLots*m.startCost;s.maxLots=s.lots;}
   s.collected=false;s.pumped=false;s.dumped=false;s.target=0;s.flow=0;s.shortLots=0;s.shortRev=0;
+  s.cashStart=m.budget;s.cycles=0;s.shorted=false;s.dropped=false;s.covered=false;
+  if(m.fund0)s.fund=p*m.fund0;if(m.hype0)s.hype=m.hype0;
+  if(m.type==='ipo'){s.collected=true;s.pumped=true;}
   return s;}
 function pumpTarget(){var s=S,avg=s.lots?s.cost/s.lots:s.open0;return Math.max(avg,s.open0)*(M.pump||1.6);}
-function updatePhases(){var s=S;
-  if(!s.collected&&s.lots>0&&G.cash<=M.budget*0.1){s.collected=true;s.target=pumpTarget();flag('Toplandı','#f5c451');msg('ic','Aşama 1 tamam','Bütçe hisseye yatırıldı. Şimdi fiyatı '+pr(s.target)+' hedefine pompala.');}
-  if(s.collected&&!s.pumped&&s.price>=s.target){s.pumped=true;flag('Hedef','#c98bff');msg('ic','Aşama 2 tamam','Fiyat hedefe ulaştı. Halk alırken malı boşalt!');}
-  if(s.pumped&&!s.dumped&&s.lots<=s.maxLots*0.1){s.dumped=true;msg('ic','Aşama 3 tamam','Malın %90\'ı halkın elinde. Kâr hedefini tuttur, seans kapansın.');}
+function updatePhases(){var s=S,t=M.type||'pump';
+  if(t==='short'){
+    if(!s.shorted&&s.shortLots>=s.float*M.shortPct){s.shorted=true;s.target=s.shortRev/s.shortLots*M.drop;flag('Açık','#ff4f66');card({ic:'south',tone:'bad',title:'Aşama 1 tamam',text:'Yeterince açığa sattın. Şimdi fiyatı '+pr(s.target)+' altına indir.'});}
+    if(s.shorted&&!s.dropped&&s.price<=s.target){s.dropped=true;flag('Dip','#2fd08c');card({ic:'trending_down',tone:'good',title:'Aşama 2 tamam',text:'Fiyat çöktü. Açığı dipten kapat!'});}
+    if(s.dropped&&!s.covered&&s.shortLots<=0){s.covered=true;card({ic:'check_circle',tone:'good',title:'Aşama 3 tamam',text:'Açık pozisyon kapandı.'});}
+    return;}
+  if(t==='defend')return;
+  if(!s.collected){var ok=t==='stealth'?s.lots>=s.float*M.stealth:(s.lots>0&&s.cashStart-G.cash>=Math.min(M.budget,s.cashStart)*0.9);
+    if(ok){s.collected=true;s.target=pumpTarget();flag('Toplandı','#f5c451');card({ic:'inventory_2',tone:'info',title:'Mal toplandı',text:'Şimdi fiyatı '+pr(s.target)+' hedefine pompala.'});}}
+  if(s.collected&&!s.pumped&&s.price>=s.target){s.pumped=true;flag('Hedef','#c98bff');card({ic:'rocket_launch',tone:'good',title:'Hedef fiyat!',text:'Halk alırken malı boşalt.'});}
+  if(s.pumped&&!s.dumped&&s.lots<=s.maxLots*0.1){s.dumped=true;
+    if(t==='twice'&&s.cycles<1){s.cycles=1;s.collected=false;s.pumped=false;s.dumped=false;s.maxLots=s.lots;s.cashStart=G.cash;s.hype=clamp(s.hype*0.6);
+      card({ic:'replay',tone:'info',title:'1. tur bitti',text:'Aynı tahtada ikinci tur: tekrar topla, pompala, boşalt. Halk artık daha temkinli.'});}
+    else{if(t==='twice')s.cycles=2;card({ic:'payments',tone:'good',title:'Mal halkın elinde',text:'Kâr hedefini tuttur, seans kapansın.'});}}
 }
+function phaseDefs(){var t=M&&M.type||'pump',s=S;
+  if(G&&G.mode==='free')return [];
+  if(t==='short')return [['AÇIĞA SAT',s.shorted],['DÜŞÜR',s.dropped],['KAPAT',s.covered]];
+  if(t==='ipo')return [['SAT',s.dumped]];
+  if(t==='defend')return [['SAVUN',G.tick>=dayT()]];
+  var pre=t==='twice'?('T'+Math.min(2,s.cycles+1)+' '):'';
+  return [[pre+(t==='stealth'?'SESSİZ TOPLA':'TOPLA'),s.collected],[pre+'POMPALA',s.pumped],[pre+'BOŞALT',s.dumped]];}
 function newRun(mode){G={mode:mode||'story',day:0,abroad:0,radar:0,anger:0,press:4,victims:0,totalPnl:0,over:false,retries:0};}
 function startDay(i){
   G.day=i;M=G.mode==='free'?G.freeM:MISSIONS[i];S=mkStock(M);
@@ -567,13 +619,14 @@ function startDay(i){
   $('msgs').innerHTML='';
   msg('news','Piyasa Haber','Seans açıldı. '+M.n+' ('+M.t+') bugün de sessiz.');
   msg('halk',pick(names),'Bankadaki faiz yetmiyor, borsada ne alsam?');
+  if(M.type==='defend')M.floorP=S.open0*M.floor;
   buildMission();buildOps();ui();draw();
 }
-function continueFrom(cp){newRun();G.abroad=cp.abroad;G.victims=cp.victims;G.totalPnl=cp.totalPnl||0;G.radar=cp.radar;G.anger=cp.anger;G.press=cp.press;
+function continueFrom(cp){newRun();G.lifeTaken=0;G.abroad=cp.abroad;G.victims=cp.victims;G.totalPnl=cp.totalPnl||0;G.radar=cp.radar;G.anger=cp.anger;G.press=cp.press;
   startDay(cp.day);G.radar=cp.radar;G.anger=cp.anger;G.press=cp.press;G.snap.radar=cp.radar;G.snap.anger=cp.anger;G.snap.press=cp.press;
-  msg('ic','Avukat','Kefaletle çıktın. Gün '+(cp.day+1)+' baştan başlıyor, bu sefer dikkatli ol.');
+  msg('ic','Avukat','Kefaletle çıktın. Bölüm '+(cp.day+1)+' baştan başlıyor, bu sefer dikkatli ol.');
   $('ov').hidden=true;paused=false;setPauseLabel();ui();draw();}
-function restartDay(){G.over=false;G.abroad=G.snap.abroad;G.radar=G.snap.radar/0.5>100?G.snap.radar:G.snap.radar;G.anger=G.snap.anger;G.press=G.snap.press;G.victims=G.snap.victims;
+function restartDay(){G.over=false;G.lifeTaken=0;G.abroad=G.snap.abroad;G.radar=G.snap.radar/0.5>100?G.snap.radar:G.snap.radar;G.anger=G.snap.anger;G.press=G.snap.press;G.victims=G.snap.victims;
   var keep={radar:G.radar,anger:G.anger,press:G.press};startDay(G.day);G.radar=keep.radar;G.anger=keep.anger;G.press=keep.press;G.snap.radar=keep.radar;G.snap.anger=keep.anger;ui();}
 
 /* ---------- akış ---------- */
@@ -614,6 +667,8 @@ function step(){
   G.radar=clamp(G.radar-0.03+(G.anger>M.anger*0.6?0.04:0));G.press=clamp(G.press*0.993+(G.anger>M.anger*0.6?0.05:0));
   G.anger=clamp(G.anger-0.01);
   updatePhases();
+  if(M&&M.type==='defend'&&G.mode!=='free'){if(G.tick%50===30){S.price*=0.96;S.flow=Math.max(-1,S.flow-0.6);S.hype=clamp(S.hype*0.7);flag('Rakip','#ff4f66');card({ic:'swords',tone:'bad',title:'Rakip fon satıyor!',text:M.n+' tahtasına dev satış emri geldi. Fiyatı tut!',chip:'−%4'});}
+    if(S.price<M.floorP){gameOver('margin');return;}}
   if(G.shocks&&G.shocks.indexOf(G.tick)>=0)shock();
   if(G.tick%60===0)events();
   if(S.shortLots>0&&netWorth()<S.shortLots*S.price*0.25){forceCover(0.02,'MARJİN ÇAĞRISI!');flag('Marjin','#ff4f66');}
@@ -657,7 +712,7 @@ function shock(){hap(1);
   flag('Son dakika',pct>0?'#2fd08c':'#ff4f66');
   msg('news','SON DAKİKA',x[0]+' BIST 100 '+(pct>0?'+':'−')+Math.abs(pct).toFixed(1).replace('.',',')+'%');
   var b=$('breaking');b.className='breaking'+(pct>0?' good':'');$('bkText').textContent=x[0];var e=$('bkPct');e.textContent='BIST '+(pct>0?'+':'−')+Math.abs(pct).toFixed(1).replace('.',',')+'%';e.style.color=pct>0?'var(--up)':'var(--down)';
-  b.hidden=false;clearTimeout(bkTimer);bkTimer=setTimeout(function(){b.hidden=true;},5500);
+  card({ic:pct>0?'trending_up':'warning',tone:pct>0?'good':'bad',title:'SON DAKİKA',text:x[0],chip:'BIST '+(pct>0?'+':'−')+Math.abs(pct).toFixed(1).replace('.',',')+'%',ms:5500});
   setTimeout(function(){if(!G.over)msg('halk',pick(names),pct>0?'Fırsat bu fırsat, her şeyi alıyorum!':'Ne oluyor ya?! Her şey kırmızı!');},1200);
 }
 function evSPK(){return {cls:'spk',t:G.day>=4?'Savcılık kapıda':'SPK\'dan bilgi talebi',p:'Sermaye Piyasası Kurulu, '+M.n+' hissesindeki olağandışı fiyat ve hacim hareketleri hakkında yazılı açıklama istiyor. Limitin: radar %'+M.radar+'.',o:[
@@ -680,16 +735,16 @@ function buy(){var s=S,lot=lotSize,cost=lot*s.price;if(G.over||paused)return;hap
   G.cash-=cost;s.cost+=cost;s.lots+=lot;s.maxLots=Math.max(s.maxLots,s.lots);s.price*=1+lot/s.float*0.22*(1+s.flow*3);s.cur.v+=lot;
   if(s.flow>0.5){s.hype=clamp(s.hype+s.flow*2);}
   if(s.flow>0.6&&G.tick-(s.akdB==null?-999:s.akdB)>25){s.akdB=G.tick;s.hype=clamp(s.hype+14*M.hm);s.flow=Math.min(1,s.flow+0.25);radarUp(2);flag('AKD +','#2fd08c');
-    msg('news','AKD Bülteni','TERE Yatırım '+s.t+'\'de en çok alan kurum! Büyük oyuncu tahtaya girdi.');
+    msg('news','AKD Bülteni','TERE Yatırım '+s.t+'\'de en çok alan kurum! Büyük oyuncu tahtaya girdi.');card({ic:'leaderboard',tone:'good',title:'AKD: TERE alıyor',text:'Halk peşinden geliyor, fiyat itiliyor.'});if(M.type==='stealth'&&!s.collected){radarUp(6);}
     setTimeout(function(){if(!G.over)msg('halk',pick(names),'TERE alıyorsa bir bildiği var, ben de '+s.t+' aldım!');},900);}
   if(s.lots/s.float>0.25)radarUp(lot/s.float*35);ui();draw();}
 function sell(){var s=S;if(G.over||paused)return;hap();if(s.lots<=0){shortSell();return;}var lot=Math.min(lotSize,s.lots),avg=s.cost/s.lots,rev=lot*s.price;
   G.cash+=rev;var gain=rev-avg*lot;G.pnl+=gain;s.cost-=avg*lot;s.lots-=lot;s.sold+=lot;s.cur.v+=lot;
   s.pubLots+=lot;s.pubCost+=rev;G.victims+=Math.round(lot/2500);
   s.flow=Math.max(-1,Math.min(0,s.flow)-lot/s.float*8);
-  var absorb=lot/s.float*(s.hype>40?0.12:s.hype>20?0.35:0.7)*(1-s.flow*2);s.price*=1-Math.min(0.15,absorb);
+  var absorb=lot/s.float*(s.hype>40?0.12:s.hype>20?0.35:0.7)*(1-s.flow*2)*(M.absorb||1);s.price*=1-Math.min(0.15,absorb);
   if(s.flow<-0.6&&G.tick-(s.akdS==null?-999:s.akdS)>25){s.akdS=G.tick;s.hype=clamp(s.hype*0.6);s.price*=0.97;s.flow=-1;angerUp(2);flag('AKD −','#ff4f66');
-    msg('news','AKD Bülteni','TERE Yatırım '+s.t+'\'de en çok satan kurum! Büyük oyuncu malı boşaltıyor.');
+    msg('news','AKD Bülteni','TERE Yatırım '+s.t+'\'de en çok satan kurum! Büyük oyuncu malı boşaltıyor.');card({ic:'leaderboard',tone:'bad',title:'AKD: TERE satıyor',text:'Halk panikte, fiyat hızla düşüyor.'});
     setTimeout(function(){if(!G.over)msg('halk',pick(names),'TERE kaçıyor! '+s.t+'\'yi ben de satıyorum, kim alırsa alsın!');},900);}s.hype=clamp(s.hype-lot/s.float*(s.hype>40?20:60));
   radarUp(lot/s.float*(s.hype<20?30:8));angerUp(lot/s.float*(s.hype<20?55:14));
   if(Math.random()<.35)flag('Satış','#ff4f66');if(s.lots<1)s.lots=0;ui();draw();}
@@ -717,7 +772,7 @@ function backfire(id){hap(1);var s=S,o=OPS[id],down=o.g==='down',x=BF[id];
   else{s.price*=1-(0.03+Math.random()*0.04);s.flow=Math.max(-1,Math.min(0,s.flow)-0.5);s.hype=clamp(s.hype*0.5);radarUp(id==='kap'||id==='wash'?12:4);}
   flag('Ters tepti','#ff8a3d');
   if(x)msg(x[0],x[1],x[2].replace(/%T/g,s.t).replace(/%N/g,s.n));
-  msg('ic','Ters tepti','"'+o.n+'" ters tepti: fiyat '+(down?'yükseldi':'düştü')+'.');}
+  msg('ic','Ters tepti','"'+o.n+'" ters tepti: fiyat '+(down?'yükseldi':'düştü')+'.');card({ic:'sync_problem',tone:'bad',title:'Ters tepti!',text:x?x[2].replace(/%T/g,s.t).replace(/%N/g,s.n):o.n,chip:down?'fiyat ↑':'fiyat ↓'});}
 function runOp(id){
   var o=OPS[id],s=S;
   if(G.over||paused||(G.cds[id]||0)>0||G.cash<oc(o))return;
@@ -748,7 +803,7 @@ function runOp(id){
 }
 function kapDlg(){var s=S;return {cls:'kap',t:'Özel durum açıklaması',p:s.n+' adına KAP\'a gönderilecek açıklamayı seç. Yalan büyüdükçe ilgi ve risk de büyür. Hisse çökerse yalan açıklama halkın öfkesini katlar.',o:KAP.map(function(k){
   var m=1+s.kap*0.6;return [k.h,'İlgi +'+Math.round(k.hy*M.hm)+' · radar +'+Math.round(k.rd*m),function(){G.cds.kap=OPS.kap.cd;var bfk=Math.random()<bfChance('kap');G.use.kap=(G.use.kap||0)+1;s.kap++;if(bfk){backfire('kap');ui();return;}hypeUp(k.hy);radarUp(k.rd*m);flag('KAP','#3aa0ff');
-    msg('kap','KAP · '+s.t+' · Özel Durum',k.h+': '+k.b.replace('%N',s.n));setTimeout(function(){if(!G.over)msg('halk',pick(names),'KAP\'a bakın!! '+s.t+' '+(k.hy>40?'uçacak!':'resmi açıkladı, güvenilir.'));},1500);ui();}];
+    msg('kap','KAP · '+s.t+' · Özel Durum',k.h+': '+k.b.replace('%N',s.n));card({ic:'campaign',tone:'kap',title:'KAP · '+k.h,text:k.b.replace('%N',s.n)});setTimeout(function(){if(!G.over)msg('halk',pick(names),'KAP\'a bakın!! '+s.t+' '+(k.hy>40?'uçacak!':'resmi açıkladı, güvenilir.'));},1500);ui();}];
 }).concat([['Vazgeç','',function(){}]])};}
 
 /* ---------- görev durumu ---------- */
@@ -778,24 +833,34 @@ function goalState(){
    {ok:true,t:'Kasa',v:money(G.cash)},
    {ok:true,warn:G.radar>=M.radar*0.75,t:'SPK radarı %'+M.radar+'\'ı geçmesin',v:'şu an %'+Math.round(G.radar)},
    {ok:true,warn:G.anger>=M.anger*0.75,t:'Halk öfkesi %'+M.anger+'\'ı geçmesin',v:'şu an %'+Math.round(G.anger)}];}
-  var s=S,dumped=s.maxLots>0?1-s.lots/s.maxLots:0,spent=Math.min(1,(M.budget-G.cash)/M.budget);
-  var g=[
-   {ok:s.collected,t:'1 · Topla: bütçenin %90\'ını hisseye yatır',v:s.collected?'tamam':'%'+Math.max(0,Math.round(spent*100))+' yatırıldı'},
-   {ok:s.pumped,t:'2 · Pompala: fiyatı hedefe çıkar',v:s.pumped?'tamam':s.collected?('hedef '+pr(s.target)+' · şu an '+pr(s.price)):'önce topla'},
-   {ok:s.dumped,t:'3 · Boşalt: malın %90\'ını halka sat',v:s.dumped?'tamam':s.pumped?('%'+Math.round(dumped*100)+' satıldı'):'önce pompala'},
-   {ok:G.pnl>=M.goal,t:'En az '+money(M.goal)+' kâr realize et',v:money(G.pnl)+' / '+money(M.goal)},
-   {ok:true,warn:G.radar>=M.radar*0.75,t:'SPK radarı %'+M.radar+'\'ı geçmesin',v:'şu an %'+Math.round(G.radar)},
+  var s=S,t=M.type||'pump',dumped=s.maxLots>0?1-s.lots/s.maxLots:0,spent=Math.max(0,Math.min(1,(s.cashStart-G.cash)/Math.min(M.budget,s.cashStart))),g=[];
+  var lim=[{ok:true,warn:G.radar>=M.radar*0.75,t:'SPK radarı %'+M.radar+'\'ı geçmesin',v:'şu an %'+Math.round(G.radar)},
    {ok:true,warn:G.anger>=M.anger*0.75,t:'Halk öfkesi %'+M.anger+'\'ı geçmesin',v:'şu an %'+Math.round(G.anger)}];
-  return g;}
+  var pnl={ok:G.pnl>=M.goal,t:'En az '+money(M.goal)+' kâr realize et',v:money(G.pnl)+' / '+money(M.goal)};
+  if(t==='short'){var sh=s.shortLots/s.float;
+    g=[{ok:s.shorted,t:'1 · Açığa sat: tahtanın %'+Math.round(M.shortPct*100)+'\'i',v:s.shorted?'tamam':'%'+Math.round(sh*100)+' açıkta'},
+       {ok:s.dropped,t:'2 · Düşür: fiyatı hedefin altına indir',v:s.dropped?'tamam':s.shorted?('hedef '+pr(s.target)+' · şu an '+pr(s.price)):'önce açığa sat'},
+       {ok:s.covered,t:'3 · Kapat: açık pozisyonu kapat',v:s.covered?'tamam':s.dropped?(tl.format(s.shortLots)+' lot açık'):'önce düşür'},pnl];}
+  else if(t==='ipo'){g=[{ok:s.dumped,t:'1 · Sat: malın %90\'ını halka sat',v:s.dumped?'tamam':'%'+Math.round(dumped*100)+' satıldı'},pnl];}
+  else if(t==='defend'){var fl=M.floorP||0;g=[{ok:true,warn:s.price<fl*1.04,t:'Fiyat '+pr(fl)+' tabanının altına inmesin',v:'şu an '+pr(s.price)},
+       {ok:G.tick>=dayT(),t:'Seans sonuna kadar dayan',v:Math.max(0,Math.ceil((dayT()-G.tick)*TICK/1000))+' sn kaldı'}];}
+  else{var pre=t==='twice'?('Tur '+Math.min(2,s.cycles+1)+'/2 · '):'';
+    g=[{ok:s.collected,t:pre+(t==='stealth'?'1 · Sessizce tahtanın %'+Math.round(M.stealth*100)+'\'unu topla':'1 · Topla: bütçenin %90\'ını hisseye yatır'),v:s.collected?'tamam':(t==='stealth'?'%'+Math.round(s.lots/s.float*100)+' tahtada':'%'+Math.round(spent*100)+' yatırıldı')},
+       {ok:s.pumped,t:pre+'2 · Pompala: fiyatı hedefe çıkar',v:s.pumped?'tamam':s.collected?('hedef '+pr(s.target)+' · şu an '+pr(s.price)):'önce topla'},
+       {ok:s.dumped&&(t!=='twice'||s.cycles>=2),t:pre+'3 · Boşalt: malın %90\'ını halka sat',v:s.dumped?'tamam':s.pumped?('%'+Math.round(dumped*100)+' satıldı'):'önce pompala'}];
+    if(M.needKap)g.push({ok:s.kap>0,t:'KAP\'a en az bir açıklama gönder',v:s.kap>0?'tamam':'henüz yok'});
+    g.push(pnl);}
+  return g.concat(lim);}
 function done(){if(G.mode==='free')return false;return goalState().every(function(x){return x.ok;});}
+var TYPE_N={pump:'Klasik vurgun',stealth:'Sessiz toplama',founder:'Kurucu satışı',short:'Ayı avı',ipo:'Halka arz',defend:'Savunma',twice:'Testere'};
 function taskCard(m,i){
   var c=document.createElement('div');c.className='task';
   add(c,'span','stamp',m.free?'SERBEST':'GİZLİ');
-  var h=add(c,'div','th');add(h,'div','logo-t',m.t.slice(0,3));var hh=add(h,'div');add(hh,'small','',m.free?'Serbest mod · 5 dakika':'Günün görevi · Gün '+(i+1)+'/'+MISSIONS.length);add(hh,'b','',m.n);
+  var h=add(c,'div','th');add(h,'div','logo-t',m.t.slice(0,3));var hh=add(h,'div');add(hh,'small','',m.free?'Serbest mod · 5 dakika':'Bölüm '+(i+1)+'/'+MISSIONS.length+' · '+TYPE_N[m.type||'pump']);add(hh,'b','',m.n);
   add(c,'q','',m.task);
   var ch=add(c,'div','chips');
   (m.free?[['Başlangıç',money(m.budget),''],['Süre','5 dakika','g'],['SPK limiti','%'+m.radar,'r'],['Öfke limiti','%'+m.anger,'a']]:
-  [['Bütçe',m.startLots?'40M kurucu lotu':money(m.budget),''],['Min. kâr',money(m.goal),'g'],['SPK limiti','%'+m.radar,'r'],['Öfke limiti','%'+m.anger,'a']]).forEach(function(x){var d=add(ch,'div','chip2 '+x[2]);add(d,'span','',x[0]);add(d,'b','',x[1]);});
+  [['Bütçe',m.startLots?(tl.format(m.startLots/1e6)+'M lot + '+money(m.budget)):money(m.budget),''],m.type==='defend'?['Hedef','Tabanı koru','g']:['Min. kâr',money(m.goal),'g'],['SPK limiti','%'+m.radar,'r'],['Süre',Math.round((m.time||420)*TICK/1000/60*10)/10+' dk','a']]).forEach(function(x){var d=add(ch,'div','chip2 '+x[2]);add(d,'span','',x[0]);add(d,'b','',x[1]);});
   var f=add(c,'div','from');add(f,'span','ms','send');f.appendChild(document.createTextNode('Yönetim Kurulu · gizli kanal'));
   return c;}
 function buildMission(){
@@ -809,17 +874,18 @@ function closeDay(timeUp){
     var crash=Math.round(Math.min(40,S.pubLots/S.float*30*(1+S.kap*0.5)));G.anger=clamp(G.anger+crash);
     var D=$('dlg');D.innerHTML='';
     var last=G.day===MISSIONS.length-1;
-    add(D,'div','eyebrow','Gün '+(G.day+1)+' · seans kapandı');add(D,'div','big','GÖREV TAMAM');
+    add(D,'div','eyebrow','Bölüm '+(G.day+1)+' · seans kapandı');add(D,'div','big','GÖREV TAMAM');
     add(D,'p','',last?'Son vurgun da tamam. Jet pistte, motorlar çalışıyor.':'Yönetim kurulu memnun. '+M.n+' hissesi halkın elinde kaldı.');
     res(D,[['Bugünkü kâr',money(G.pnl)],['CEO primi (kârın %50\'si) → kaçış fonu',money(prim)],['Kasada kalan (şirkete kaldı)',money(left)],['Kaçış fonu toplamı',money(G.abroad)],['Toplam mağdur',tl.format(G.victims)+' kişi'],['Seans sonrası '+M.t+' çöktü: halk öfkesi','+'+crash+(S.kap?' (KAP yalanı yüzünden fazla)':'')],['Yarına devreden öfke / radar','%'+Math.round(G.anger*0.5)+' / %'+Math.round(G.radar*0.5)]]);
-    var b=add(D,'button','go',last?'✈ Jete bin':'Sonraki güne geç');b.onclick=function(){if(last){gameOver('final');}else{brief(G.day+1);}};
+    unlock(G.day+1);
+    var b=add(D,'button','go',last?'✈ Jete bin':'▶ Reklam izle, sonraki bölüme geç');b.onclick=function(){if(last){gameOver('final');return;}b.disabled=true;Ads.rewarded('chapter').then(function(){brief(G.day+1);});};
     $('ov').hidden=false;setPauseLabel();
   }else if(timeUp){
     paused=true;var D2=$('dlg');D2.innerHTML='';
     add(D2,'div','eyebrow','Seans kapandı');add(D2,'div','big','GÖREV BAŞARISIZ');
-    add(D2,'p','','Yönetim kurulu hedeflere ulaşılamadığı için çok kızgın. Bu günü baştan oynayabilirsin.');
+    loseLife();add(D2,'p','','Yönetim kurulu hedeflere ulaşılamadığı için çok kızgın. Bir canın gitti.');
     var ul=add(D2,'ul','dgoals');goalState().forEach(function(x){add(ul,'li','',(x.ok?'✓ ':'✕ ')+x.t+' — '+x.v);});
-    var bt=add(D2,'div','btns');var r=add(bt,'button','go','Günü tekrar oyna');r.onclick=function(){restartDay();$('ov').hidden=true;paused=false;setPauseLabel();};
+    var bt=add(D2,'div','btns');lifeButton(bt,'Bölümü tekrar oyna',function(){restartDay();$('ov').hidden=true;paused=false;setPauseLabel();},function(){closeDay(true);});
     var q=add(bt,'button','sec','Bırak ve kaç');q.onclick=function(){gameOver('quit');};
     $('ov').hidden=false;setPauseLabel();
   }else{
@@ -830,9 +896,7 @@ function brief(i){$('dlg').className='dlg';
   paused=true;var m=MISSIONS[i],D=$('dlg');D.innerHTML='';
   add(D,'div','eyebrow','Yeni mesaj · Yönetim Kurulu');
   D.appendChild(taskCard(m,i));
-  add(D,'p','mhide',m.brief);
-  var ul=add(D,'ul','dgoals mhide');
-  [(m.startLots?'Elinde: '+tl.format(m.startLots)+' lot kurucu payı':'Bütçe: '+money(m.budget)),'Topla: bütçenin %90\'ını hisseye yatır','Pompala: fiyatı maliyetinin '+(m.pump||1.6).toFixed(1).replace('.',',')+' katına çıkar (grafikte mor çizgi)','Boşalt: malın %90\'ını halka sat ve en az '+money(m.goal)+' kâr et','SPK radarı %'+m.radar+'\'a ulaşırsa baskın: oyun biter','Halk öfkesi %'+m.anger+'\'a ulaşırsa halk ayaklanır: oyun biter'].concat(m.abroadGoal?['Kaçış fonu: en az '+money(m.abroadGoal)]:[]).forEach(function(t){add(ul,'li','',t);});
+  add(D,'p','',m.brief);
   var prev=i>0?MISSIONS[i-1].ops:[];var nw=m.ops.filter(function(o){return prev.indexOf(o)<0;});
   if(i>0&&nw.length)add(D,'p','','Yeni operasyon: '+nw.map(function(o){return OPS[o].n;}).join(', ')+'.');
   var b=add(D,'button','go','Seansı aç');b.onclick=function(){startDay(i);$('ov').hidden=true;paused=false;setPauseLabel();};
@@ -852,7 +916,7 @@ function buildOps(){var E=$('ops');E.innerHTML='';var prev=G.mode!=='free'&&G.da
   b.querySelector('small').textContent=o.d;b.onclick=function(){runOp(id)};E.appendChild(b);});});}
 function ui(){
   var s=S;
-  $('day').textContent=(G.day+1)+'/'+MISSIONS.length;$('cash').textContent=money(G.cash);$('abroad').textContent=money(G.abroad);
+  $('day').textContent=(G.day+1)+'/'+MISSIONS.length;drawLives();$('cash').textContent=money(G.cash);$('abroad').textContent=money(G.abroad);
   var p=$('pnl');p.innerHTML='';add(p,'span','',money(G.pnl));if(G.mode!=='free'){add(p,'span','pg',' / '+money(M.goal));}p.className=G.mode!=='free'&&G.pnl>=M.goal?'hit':G.pnl>=0?'up':'down';$('pnlLbl').textContent=G.mode==='free'?'Net kâr':'Kâr / min. kâr';
   $('mRadar').style.width=G.radar+'%';$('mPress').style.width=G.press+'%';$('mAnger').style.width=G.anger+'%';$('mHype').style.width=s.hype+'%';
   var fl=$('mFlow'),fv=s.flow||0;fl.style.width=Math.abs(fv)*50+'%';fl.style.left=fv>=0?'50%':(50+fv*50)+'%';fl.style.background=fv>=0?'var(--up)':'var(--down)';
@@ -863,11 +927,11 @@ function ui(){
   $('tk').textContent=s.t;$('nm').textContent=s.n+(s.burnt?' · çöktü, halk artık temkinli':'');
   $('px').textContent=pr(s.price);$('mbPx').textContent=pr(s.price);$('mbTk').textContent=s.t;var ch=(s.price/s.open0-1)*100,ce=$('chg');ce.textContent=pct(ch);ce.className=ch>=0?'up':'down';
   var avg=s.lots?s.cost/s.lots:0,sh=s.shortLots>0,sa=sh?s.shortRev/s.shortLots:0,le=$('lots');
-  le.textContent=sh?'−'+tl.format(s.shortLots)+' (açığa)':tl.format(s.lots);le.className=sh?'down':'';
+  var cl=function(n){return n>=1e6?(n/1e6).toFixed(1).replace('.',',')+'M':tl.format(n);};le.textContent=sh?'−'+cl(s.shortLots)+' (açığa)':cl(s.lots);le.className=sh?'down':'';
   $('avg').textContent=sh?pr(sa):s.lots?pr(avg):'—';
   var u=sh?s.shortLots*(sa-s.price):s.lots*(s.price-avg),ue=$('upnl');ue.textContent=money(u);ue.className=u>=0?'up':'down';
   $('share').textContent='%'+Math.round(s.lots/s.float*100);$('publ').textContent=tl.format(s.pubLots);
-  var st=[s.collected,s.pumped,s.dumped],cur=st.indexOf(false);for(var i=0;i<3;i++)$('ph'+i).className=st[i]?'done':i===cur?'on':'';
+  var pd=phaseDefs(),ph=$('phase'),cur=pd.map(function(x){return x[1];}).indexOf(false);if(ph.children.length!==pd.length||ph.dataset.k!==pd.map(function(x){return x[0];}).join()){ph.innerHTML='';ph.dataset.k=pd.map(function(x){return x[0];}).join();pd.forEach(function(x,i){add(ph,'span','',(i+1)+' '+x[0]);});}pd.forEach(function(x,i){ph.children[i].className=x[1]?'done':i===cur?'on':'';});
   var left=Math.max(0,dayT()-G.tick)*TICK/1000;$('clock').textContent=String(Math.floor(left/60)).padStart(2,'0')+':'+String(Math.floor(left%60)).padStart(2,'0');
   $('clock').style.color=left<30?'var(--siren)':'';$('chClockT').textContent=$('clock').textContent;$('chClock').classList.toggle('late',left<30);
   var gl=$('goals');gl.innerHTML='';goalState().forEach(function(x){var li=add(gl,'li',x.warn?'warn':x.ok?'ok':'no');add(li,'i','',x.warn?'!':x.ok?'✓':'○');add(li,'span','',x.t);add(li,'small','',x.v);});
@@ -885,7 +949,8 @@ function draw(){
   var all=s.candles.concat([s.cur]),n=Math.min(all.length,Math.max(30,Math.floor((W-axis)/9))),vis=all.slice(-n),off=all.length-n;
   var hi=-1e9,lo=1e9,vmax=1;vis.forEach(function(k){hi=Math.max(hi,k.h);lo=Math.min(lo,k.l);vmax=Math.max(vmax,k.v);});
   var avg=s.lots?s.cost/s.lots:0;if(avg&&avg>lo*0.6){hi=Math.max(hi,avg);lo=Math.min(lo,avg);}
-  var tgt=s.collected&&!s.pumped?s.target:0;if(tgt)hi=Math.max(hi,tgt);
+  var isShort=M&&M.type==='short',tgt=isShort?(s.shorted&&!s.dropped?s.target:0):(s.collected&&!s.pumped?s.target:0);if(tgt){hi=Math.max(hi,tgt);lo=Math.min(lo,tgt);}
+  var floorP=M&&M.type==='defend'?M.floorP:0;if(floorP)lo=Math.min(lo,floorP*0.98);
   var pad=(hi-lo)*0.14||0.1;hi+=pad;lo-=pad;
   var Y=function(v){return 14+(hi-v)/(hi-lo)*(chH-14)},cw=(W-axis)/n,bw=Math.max(2,cw*0.66);
   ctx.fillStyle='rgba(154,164,189,.07)';ctx.font='54px Bungee, Impact';ctx.textAlign='center';ctx.fillText(s.t,(W-axis)/2,chH/2+18);
@@ -902,7 +967,8 @@ function draw(){
     ctx.fillStyle='#f5c451';ctx.textAlign='left';ctx.font='10px JetBrains Mono, monospace';ctx.fillText('MALİYETİN '+avg.toFixed(2).replace('.',','),6,ya-4);}}
   if(s.shortLots>0){var sa=s.shortRev/s.shortLots,ys=Y(sa);if(ys>0&&ys<chH){ctx.setLineDash([3,4]);ctx.strokeStyle='#ff4f66';ctx.beginPath();ctx.moveTo(0,ys);ctx.lineTo(W-axis,ys);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#ff4f66';ctx.font='10px JetBrains Mono, monospace';ctx.textAlign='left';ctx.fillText('AÇIĞA SATIŞ ORT. '+sa.toFixed(2).replace('.',','),6,ys+12);}}
   if(tgt){var yt=Y(tgt);ctx.setLineDash([8,4]);ctx.strokeStyle='#c98bff';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,yt);ctx.lineTo(W-axis,yt);ctx.stroke();ctx.setLineDash([]);ctx.lineWidth=1;
-    ctx.fillStyle='#c98bff';ctx.font='700 11px JetBrains Mono, monospace';ctx.textAlign='left';ctx.fillText('POMPALA HEDEFİ '+tgt.toFixed(2).replace('.',','),6,yt-5);}
+    ctx.fillStyle='#c98bff';ctx.font='700 11px JetBrains Mono, monospace';ctx.textAlign='left';ctx.fillText((isShort?'DÜŞÜŞ HEDEFİ ':'POMPALA HEDEFİ ')+tgt.toFixed(2).replace('.',','),6,yt-5);}
+  if(floorP){var yf=Y(floorP);ctx.setLineDash([8,4]);ctx.strokeStyle='#ff4f66';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,yf);ctx.lineTo(W-axis,yf);ctx.stroke();ctx.setLineDash([]);ctx.lineWidth=1;ctx.fillStyle='#ff4f66';ctx.font='700 11px JetBrains Mono, monospace';ctx.textAlign='left';ctx.fillText('TABAN '+floorP.toFixed(2).replace('.',','),6,yf+14);}
   var yp=Y(s.price),lc=s.cur.c>=s.cur.o?'#2fd08c':'#ff4f66';ctx.strokeStyle=lc;ctx.setLineDash([2,3]);ctx.beginPath();ctx.moveTo(0,yp);ctx.lineTo(W-axis,yp);ctx.stroke();ctx.setLineDash([]);
   ctx.fillStyle=lc;ctx.fillRect(W-axis+2,yp-9,axis-4,18);ctx.fillStyle='#0b0e15';ctx.font='700 11px JetBrains Mono, monospace';ctx.textAlign='left';ctx.fillText(s.price.toFixed(2).replace('.',','),W-axis+8,yp+4);
 }
@@ -921,15 +987,15 @@ function modal(def){
 function intro(){
   var D=$('dlg');D.innerHTML='';D.className='dlg menu';
   var hero=add(D,'div','m-hero');
-  var lg=add(hero,'div','m-logo');lg.innerHTML='<span>TERE</span><span>YATIRIM</span>';
+  var lg=add(hero,'div','m-logo');lg.innerHTML='<span>BORSADA</span><span>VURGUN</span>';
   var spark=add(hero,'div','m-spark');for(var i=0;i<9;i++){var c=add(spark,'i');c.style.height=(18+Math.round(Math.sin(i*1.3)*10+i*5))+'px';if(i===3||i===6)c.className='r';}
-  add(hero,'p','m-tag','Hisseyi pompala. Halka boşalt. SPK\'dan kaç.');
+  add(hero,'p','m-tag','TERE Yatırım\'ın CEO\'susun. Hisseyi pompala, halka boşalt, SPK\'dan kaç.');
   var bt=add(D,'div','m-btns');
   var cp=null;try{cp=JSON.parse(lsGet('tere_cp','null'));}catch(e){}
   function big(cls,icon,title,sub,fn){var b=add(bt,'button','m-btn '+cls);var ic=add(b,'span','ms',icon);var tx=add(b,'span','m-tx');add(tx,'b','',title);if(sub)add(tx,'small','',sub);b.onclick=fn;return b;}
-  if(cp&&cp.day>0)big('gold','play_arrow','Devam et','Gün '+(cp.day+1)+' / 5',function(){D.className='dlg';continueFrom(cp);});
-  big(cp&&cp.day>0?'':'gold','auto_stories',cp&&cp.day>0?'Yeni hikâye':'Hikâye modu','5 gün · 5 görev',function(){D.className='dlg';lsSet('tere_cp','null');newRun();brief(0);});
-  big('','format_list_numbered','Bölüm seç','İstediğin günden başla',chapters);
+  if(cp&&cp.day>0)big('gold','play_arrow','Devam et','Bölüm '+(cp.day+1)+' / '+MISSIONS.length,function(){D.className='dlg';continueFrom(cp);});
+  big(cp&&cp.day>0?'':'gold','auto_stories',cp&&cp.day>0?'Yeni hikâye':'Hikâye modu','10 bölüm · 7 farklı oyun türü',function(){D.className='dlg';lsSet('tere_cp','null');newRun();brief(0);});
+  big('','format_list_numbered','Bölüm seç','Açtığın bölümden başla',chapters);
   big('','bolt','Serbest mod','10M TL · 5 dakika',function(){D.className='dlg';startFree();});
   var row=add(bt,'div','m-row');
   var h=add(row,'button','m-sm');add(h,'span','ms','help');h.appendChild(document.createTextNode('Nasıl oynanır'));h.onclick=howTo;
@@ -941,11 +1007,11 @@ function chapters(){
   var D=$('dlg');D.className='dlg menu';D.innerHTML='';
   add(D,'div','eyebrow','Hikâye modu');add(D,'h2','','Bölüm seç').style.color='var(--gold)';
   var bt=add(D,'div','m-btns');
-  MISSIONS.forEach(function(m,i){var b=add(bt,'button','m-btn ch');var n=add(b,'span','ch-n',String(i+1));var tx=add(b,'span','m-tx');add(tx,'b','',m.n);
-    add(tx,'small','',(m.startLots?'40M kurucu lotu':money(m.budget)+' bütçe')+' · hedef '+money(m.goal)+' · SPK %'+m.radar);
-    b.onclick=function(){D.className='dlg';newRun();brief(i);};});
+  var mx=maxCh();MISSIONS.forEach(function(m,i){var lock=i>mx;var b=add(bt,'button','m-btn ch'+(lock?' lock':''));var n=add(b,'span','ch-n'+(lock?' ms':''),lock?'lock':String(i+1));var tx=add(b,'span','m-tx');add(tx,'b','',m.n);
+    add(tx,'small','',TYPE_N[m.type||'pump']+(lock?' · önceki bölümü bitir':' · SPK %'+m.radar));
+    b.onclick=function(){if(lock)return;D.className='dlg';newRun();brief(i);};});
   var bk=add(D,'div','btns');var b=add(bk,'button','sec','Geri');b.onclick=intro;
-  add(D,'p','fine','Ortadan başlarsan kaçış fonun sıfırdan başlar.');
+  add(D,'p','fine','Bir bölümü bitirince sonraki açılır. Ortadan başlarsan kaçış fonun sıfırdan başlar.');
   $('ov').hidden=false;
 }
 function howTo(){
@@ -992,15 +1058,17 @@ function gameOver(kind){$('dlg').className='dlg';hap(1);
   G.over=true;paused=true;var D=$('dlg');D.innerHTML='';
   var full=kind==='final'||kind==='jet'||kind==='quit';
   var score=full?G.abroad*(kind==='final'?1.2:1):G.abroad*0.5;
-  var head={final:'BÜYÜK KAÇIŞ',jet:'KAÇTIN',quit:'KAÇTIN',raid:'BASKIN!',anger:'HALK AYAKTA'}[kind];
-  var text={final:'Beş günün sonunda jet gece yarısı kalktı. Arkanda binlerce mağdur ve boş bir plaza kaldı. Tamamlama bonusu: kaçış fonu ×1,2.',
+  if(!full&&!G.lifeTaken){G.lifeTaken=1;loseLife();}
+  var head={final:'BÜYÜK KAÇIŞ',jet:'KAÇTIN',quit:'KAÇTIN',raid:'BASKIN!',anger:'HALK AYAKTA',margin:'TEMİNAT ÇAĞRISI'}[kind];
+  var text={final:'On bölümün sonunda jet gece yarısı kalktı. Arkanda binlerce mağdur ve boş bir plaza kaldı. Tamamlama bonusu: kaçış fonu ×1,2.',
     jet:'Özel jet gece yarısı kalktı. Ofiste kimse yok, telefonlar susmuyor.',quit:'Yönetim kurulunu beklemeden kaçtın. Ofiste kimse yok, telefonlar susmuyor.',
     raid:'Sabah 06:00. Kapı çaldı. Mahkeme kararıyla şirketin yönetimine el konuldu. Yurtdışı hesaplarının yarısı donduruldu.',
-    anger:'Mağdur yatırımcılar plazayı sardı, havalimanı yolu kapandı. Gözaltına alındın; yurtdışı hesaplarının yarısı donduruldu.'}[kind];
+    anger:'Mağdur yatırımcılar plazayı sardı, havalimanı yolu kapandı. Gözaltına alındın; yurtdışı hesaplarının yarısı donduruldu.',
+    margin:'Fiyat tabanın altına indi. Bankalar teminattaki bütün hisselerini piyasaya döktü, her şey çöktü.'}[kind];
   var h=add(D,'div','big',head);h.style.color=full?'var(--gold)':kind==='anger'?'var(--anger)':'var(--siren)';
   add(D,'p','',text);
   var rank=!full?'Yakalandın':score<80e6?'Kaçak muhasebeci':score<250e6?'Dubai\'de villa':score<600e6?'Ada sahibi':'Efsane: belgeseli çekilecek';
-  res(D,[['Unvan',rank],['Kaçırılan para',money(score)],['Mağdur yatırımcı',tl.format(G.victims)+' kişi'],['Tamamlanan gün',(G.day+(kind==='final'?1:0))+' / '+MISSIONS.length]]);
+  res(D,[['Unvan',rank],['Kaçırılan para',money(score)],['Mağdur yatırımcı',tl.format(G.victims)+' kişi'],['Tamamlanan bölüm',(G.day+(kind==='final'?1:0))+' / '+MISSIONS.length]]);
   var entry={money:Math.round(score),victims:G.victims,days:G.day+(kind==='final'?1:0),ts:Date.now()};
   var sv=add(D,'div','save');var inp=add(sv,'input');inp.id='nick';inp.maxLength=24;inp.placeholder='Takma adın, örn. Kurt CEO';inp.value=lsGet('tere_nick','');
   var sb=add(sv,'button','go','Skoru kaydet');var note=add(D,'p','fine','');
@@ -1008,13 +1076,61 @@ function gameOver(kind){$('dlg').className='dlg';hap(1);
     saveLB(entry).then(function(where){showLB(where==='local'?'Paylaşılan tabloya yazılamadı; skorun bu tarayıcıdaki tabloya kaydedildi.':null,null,entry);});};
   inp.oninput=function(){note.textContent='';};
   var bt=add(D,'div','btns');
-  if(!full){var cpd=CP;if(cpd){var c=add(bt,'button','go','Gün '+(cpd.day+1)+'\'den devam et');c.onclick=function(){continueFrom(cpd);};}}
+  if(!full){var cpd=CP;if(cpd){lifeButton(bt,'Bölüm '+(cpd.day+1)+'\'den devam et',function(){continueFrom(cpd);},function(){gameOver(kind);});}}
   else{lsSet('tere_cp','null');CP=null;}
   var b=add(bt,'button','sec','Baştan oyna');b.onclick=function(){lsSet('tere_cp','null');CP=null;newRun();brief(0);};
   var l=add(bt,'button','sec','🏆 Liderlik tablosu');l.onclick=function(){showLB(null,function(){gameOver(kind);},null);};
   $('ov').hidden=false;setPauseLabel();
 }
 var CP=null;
+/* ---------- canlar ---------- */
+var MAXL=3;
+function todayKey(){var d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
+function lives(){var day=lsGet('bv_lday','');if(day!==todayKey()){lsSet('bv_lday',todayKey());lsSet('bv_lives',String(MAXL));}var v=parseInt(lsGet('bv_lives',String(MAXL)),10);return isNaN(v)?MAXL:Math.max(0,Math.min(MAXL,v));}
+function setLives(v){lsSet('bv_lives',String(Math.max(0,Math.min(MAXL,v))));drawLives();}
+function loseLife(){setLives(lives()-1);hap(1);}
+function drawLives(){var e=$('lives');if(!e)return;var n=lives(),h='';for(var i=0;i<MAXL;i++)h+='<span class="ms'+(i<n?' on':'')+'">favorite</span>';e.innerHTML=h;e.setAttribute('aria-label',n+' can');}
+function maxCh(){var v=parseInt(lsGet('bv_maxch','0'),10);return isNaN(v)?0:v;}
+function unlock(i){if(i>maxCh()&&i<MISSIONS.length)lsSet('bv_maxch',String(i));}
+function lifeButton(parent,label,onPlay,onBack){
+  var n=lives();
+  if(n>0){var b=add(parent,'button','go',label+' · ❤ '+n);b.onclick=onPlay;return;}
+  var w=add(parent,'button','go','▶ Reklam izle, +1 can');add(parent,'p','fine','Canın bitti. Canlar her gün yenilenir.');
+  w.onclick=function(){w.disabled=true;w.textContent='Reklam yükleniyor…';Ads.rewarded('life').then(function(ok){if(ok){setLives(lives()+1);card({ic:'favorite',tone:'good',title:'+1 can',text:'Kaldığın yerden devam edebilirsin.'});}else{card({ic:'wifi_off',tone:'bad',title:'Reklam yüklenemedi',text:'İnternet bağlantını kontrol edip tekrar dene.'});}onBack();});};}
+/* ---------- reklam (Pamuk'u Kurtar ile aynı akış: UMP onayı → ATT → G içerik → ödüllü reklam) ---------- */
+var Ads=(function(){
+  var CFG=window.BV_CFG||{};var CAP=window.Capacitor;
+  var A=CAP&&CAP.isNativePlatform&&CAP.isNativePlatform()&&CAP.Plugins&&CAP.Plugins.AdMob;
+  var unitId=CFG.admobRewardedIos||'ca-app-pub-3940256099942544/1712485313',testing=CFG.adTesting!==false,devices=CFG.testDevices||[];
+  var ready=false,loading=null,initDone=null;
+  function log(){try{console.log.apply(console,['[Vurgun]'].concat([].slice.call(arguments)));}catch(e){}}
+  function to(p,ms,f){return Promise.race([p,new Promise(function(r){setTimeout(function(){r(f);},ms);})]);}
+  async function init(){
+    try{var info=await A.requestConsentInfo(testing?{testDeviceIdentifiers:devices}:{});if(info.isConsentFormAvailable&&info.status==='REQUIRED')info=await A.showConsentForm();log('onay',info.status);}catch(e){log('UMP hatası',e);}
+    try{var st=await A.trackingAuthorizationStatus();if(st.status==='notDetermined')await A.requestTrackingAuthorization();}catch(e){log('ATT hatası',e);}
+    await A.initialize({initializeForTesting:testing,testingDevices:devices,maxAdContentRating:'General',tagForChildDirectedTreatment:false,tagForUnderAgeOfConsent:false});}
+  function load(){if(ready)return Promise.resolve(true);if(!loading){loading=initDone.then(function(){return A.prepareRewardVideoAd({adId:unitId,isTesting:testing});}).then(function(){ready=true;return true;}).catch(function(e){log('reklam yüklenemedi',e);return false;}).finally(function(){loading=null;});}return loading;}
+  function nativeShow(){return new Promise(async function(resolve){
+    var ok=await to(load(),12000,false);if(!ok){resolve(false);return;}
+    var got=false,fin=false,subs=[];
+    function finish(){if(fin)return;fin=true;subs.forEach(function(s){Promise.resolve(s).then(function(h){h&&h.remove&&h.remove();});});ready=false;load();resolve(got);}
+    subs.push(A.addListener('onRewardedVideoAdReward',function(){got=true;}));
+    subs.push(A.addListener('onRewardedVideoAdDismissed',finish));
+    subs.push(A.addListener('onRewardedVideoAdFailedToShow',function(){got=false;finish();}));
+    A.showRewardVideoAd().then(function(item){if(item)got=true;}).catch(function(){finish();});});}
+  function webShow(why){return new Promise(function(resolve){
+    var D=$('dlg');D.className='dlg';D.innerHTML='';var wasHidden=$('ov').hidden;
+    add(D,'div','eyebrow','Reklam arası');var ad=add(D,'div','adph');add(ad,'span','ms','smartphone');add(ad,'b','','BORSADA VURGUN');add(ad,'small','','Yakında App Store\'da. Telefonda reklamlar burada gösterilecek.');
+    var b=add(D,'button','go','5');b.disabled=true;var n=5;var iv=setInterval(function(){n--;if(n>0){b.textContent=String(n);}else{clearInterval(iv);b.disabled=false;b.textContent=why==='life'?'Canını al':'Devam et';}},1000);
+    b.onclick=function(){if(b.disabled)return;resolve(true);};$('ov').hidden=false;});}
+  if(A){initDone=init().catch(function(e){log('AdMob başlatılamadı',e);});initDone.then(load);}
+  return {native:!!A,rewarded:function(why){return A?nativeShow():webShow(why);}};
+})();
+/* ---------- olay kartları ---------- */
+function card(o){var box=$('cards');if(!box)return;var c=document.createElement('div');c.className='evc '+(o.tone||'info');
+  var ic=add(c,'span','ms evi',o.ic||'info');var tx=add(c,'div','evt');add(tx,'b','',o.title||'');if(o.text)add(tx,'small','',o.text);if(o.chip)add(c,'em','',o.chip);
+  c.onclick=function(){c.remove();};box.prepend(c);while(box.children.length>3)box.lastChild.remove();
+  setTimeout(function(){c.classList.add('out');setTimeout(function(){c.remove();},400);},o.ms||4200);}
 
 /* ---------- liderlik tablosu ---------- */
 var LB={db:null,uid:null,ready:null};
@@ -1084,7 +1200,7 @@ setInterval(step,TICK);
 })();
 </script>
 
-<script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
-<!-- build 5cd8b395f9 -->
+<script>if('serviceWorker' in navigator&&!(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform())){addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
+<!-- build 7c278ef37b -->
 </body>
 </html>

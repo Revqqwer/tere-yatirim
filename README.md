@@ -1,4 +1,4 @@
-# TERE YATIRIM
+# BORSADA VURGUN
 
 Hiciv bir borsa oyunu: hisseyi topla, pompala, halka boşalt; SPK radarına ve halkın öfkesine yakalanmadan kaç.
 
