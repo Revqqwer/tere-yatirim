@@ -100,6 +100,11 @@ h3{font-family:var(--f-num);font-weight:500;font-size:11px;letter-spacing:.12em;
 .m-btn.ch.lock{opacity:.5}.ch-n.ms{font-family:"Material Symbols Rounded";font-size:18px}
 .adph{display:flex;flex-direction:column;align-items:center;gap:6px;padding:28px 16px;margin:8px 0 14px;border-radius:14px;background:linear-gradient(140deg,rgba(245,196,81,.18),rgba(201,139,255,.14));border:1px dashed rgba(245,196,81,.5);text-align:center}
 .adph .ms{font-size:40px;color:var(--gold)}.adph b{font-family:var(--f-disp);font-weight:400;font-size:20px}.adph small{color:var(--mute)}
+.coach{display:flex;align-items:flex-start;gap:10px;margin:0 12px 10px;padding:10px 12px;border-radius:10px;background:linear-gradient(135deg,rgba(245,196,81,.2),rgba(201,139,255,.14));border:1px solid rgba(245,196,81,.55);font-size:13px;font-weight:500;line-height:1.4}
+.coach .ms{color:var(--gold);font-size:20px;flex:none}
+.coach.pop{animation:coachPop .45s cubic-bezier(.2,1.4,.5,1)}
+@keyframes coachPop{from{transform:scale(.96);opacity:.4}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.coach.pop{animation:none}}
 .chpause{display:inline-flex;align-items:center;justify-content:center;align-self:center;width:30px;height:30px;padding:0;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--fg)}
 .chpause .ms{font-size:18px}
 .chpause.on{background:var(--gold);border-color:var(--gold);color:#241a00}
@@ -412,7 +417,7 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 
 <div class="app">
   <div class="p top">
-    <div class="brand"><div class="logo">BORSADA <span>VURGUN</span></div><div class="daypill"><span class="ms">calendar_month</span>Bölüm <b id="day">1/10</b></div><div class="lives" id="lives" aria-label="Canlar"></div></div>
+    <div class="brand"><div class="logo">BORSADA <span>VURGUN</span></div><div class="daypill"><span class="ms">calendar_month</span><span id="dayLbl">Bölüm</span> <b id="day">1/10</b></div><div class="lives" id="lives" aria-label="Canlar"></div></div>
     <div class="stats">
       <div class="st"><small><span class="ms">account_balance_wallet</span>Kasa</small><b id="cash">₺0</b></div>
       <div class="st"><small><span class="ms">trending_up</span><span id="pnlLbl">Kâr / min. kâr</span></small><b id="pnl" class="up">₺0</b></div>
@@ -438,6 +443,7 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
       <small id="nm"></small>
       <div class="phase" id="phase" aria-label="Operasyon aşaması"></div>
     </div>
+    <div class="coach" id="coach" hidden><span class="ms">school</span><span id="coachT"></span></div>
     <div class="cv"><canvas id="cv" aria-label="Görevdeki hissenin canlı mum grafiği"></canvas>
       <div class="pausedov" id="pausedOv" hidden><span class="ms">pause_circle</span><b>Seans durduruldu</b><small>Zaman, fiyat ve operasyonlar bekliyor.</small><button class="go" id="resumeBtn"><span class="ms">play_arrow</span>Devam et</button></div>
       <div class="breaking" id="breaking" hidden role="alert"><b>SON DAKİKA</b><span id="bkText"></span><em id="bkPct"></em></div></div>
@@ -505,6 +511,15 @@ function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
 
 /* ---------- görevler ---------- */
 var MISSIONS=[
+ {tutorial:1,type:'pump',t:'OKUL',n:'Okul Kantini A.Ş.',p:2.00,f:30e6,budget:5e6,goal:0.3e6,pump:1.12,radar:95,anger:95,hm:3.5,vol:0.5,time:600,ops:['tg'],
+  task:'Hoş geldin CEO! İlk işin kolay: 5 milyon TL ile Okul Kantini hissesi al, Telegram grubunla fiyatı biraz kaldır ve malı sat. Acele yok, süren bol.',
+  brief:'Eğitim 1: Al, pompala, sat. Grafiğin üstündeki rehber çubuğu sana adım adım ne yapacağını söyleyecek. Bu eğitimde SPK ve halk seni rahatsız etmeyecek.'},
+ {tutorial:2,type:'pump',t:'KIRTS',n:'Kırtasiye Dünyası',p:3.00,f:40e6,budget:10e6,goal:0.6e6,pump:1.15,radar:90,anger:90,hm:2.5,vol:0.5,time:600,ops:['tg','bot','inf','news','hide'],
+  task:'Şimdi operasyonları öğren: Bot yorumları, influencer ve haberle ilgiyi artır. SPK radarı yükselirse paravan hesaplarla düşür. 600 bin TL kâr yeter.',
+  brief:'Eğitim 2: Operasyonlar ve risk. Üstteki SPK radarı ve halk öfkesi göstergelerine dikkat et; gerçek bölümlerde limiti aşarsan baskın yersin.'},
+ {tutorial:3,type:'short',shortPct:0.1,drop:0.85,fund0:0.6,hype0:40,t:'SIMIT',n:'Simit Sarayı Holding',p:4.00,f:40e6,budget:10e6,goal:0.4e6,radar:90,anger:90,hm:1.2,vol:0.8,time:600,ops:['tg','short','spoof','infneg','hide'],
+  task:'Son eğitim: düşüşten kazanmayı öğren. Elinde mal yokken SAT açığa satar. Fiyatı düşür, sonra AL ile açığını dipten kapat.',
+  brief:'Eğitim 3: Açığa satış. "Fiyatı düşür" operasyonlarıyla tahtayı aşağı bastır. Bunu bitirince gerçek bölümler başlıyor.'},
  {type:'pump',t:'SISCM',n:'Şişme Cam',p:3.10,f:60e6,budget:50e6,goal:15e6,radar:60,anger:40,hm:1,vol:1,ops:['tg','bot','inf','wash','short','spoof','infneg','hide'],
   task:'50 milyon TL\'lik Şişme Cam al. Telegram ve influencerlarla fiyatı kaldır, malı halka boşalt, bundan maksimum kârı et. SPK uyanmasın, halk da uyanmasın.',
   brief:'Klasik vurgun: önce mal topla, sonra fiyatı mor hedef çizgisine kaldır, halk alırken malı boşalt.'},
@@ -599,6 +614,20 @@ function updatePhases(){var s=S,t=M.type||'pump';
       card({ic:'replay',tone:'info',title:'1. tur bitti',text:'Aynı tahtada ikinci tur: tekrar topla, pompala, boşalt. Halk artık daha temkinli.'});}
     else{if(t==='twice')s.cycles=2;card({ic:'payments',tone:'good',title:'Mal halkın elinde',text:'Kâr hedefini tuttur, seans kapansın.'});}}
 }
+function coachText(){var s=S,t=M.tutorial,ok=G.pnl>=M.goal;
+  if(t===1){if(!s.collected)return '① Alttaki AL düğmesine bas ve bütçenin %90\'ını hisseye yatır. Lot büyüklüğünü (1M lot) değiştirebilirsin.';
+    if(!s.pumped)return '② İşlem sekmesine geç ve "Telegram sinyal grubu"na bas (eğitimde operasyonlar bedava). Halk ilgisi artınca fiyat mor hedef çizgisine çıkar.';
+    if(!s.dumped)return '③ Fiyat hedefte! Şimdi SAT ile malı halka boşalt. İlgi yüksekken satarsan fiyat az düşer.';
+    return ok?'Harika! Seans birazdan kapanacak.':'④ Kalan malı da sat, kâr hedefini tuttur.';}
+  if(t===2){if(!s.collected)return '① Önce AL ile bütçenin %90\'ını hisseye yatır. Gerçek bölümlerde operasyonlar paralı: kasada biraz para bırakmayı unutma.';
+    if(!s.pumped)return G.radar>40?'② SPK radarı yükseliyor! İşlem sekmesindeki "Paravan hesaplara dağıt" radarı düşürür.':'② İşlem sekmesinde Bot yorumları, Influencer ve Haber sızdır ile ilgiyi artır. Her operasyon SPK radarını biraz yükseltir.';
+    if(!s.dumped)return '③ Malı parça parça sat. Çok hızlı satarsan "AKD: TERE satıyor" haberi çıkar ve fiyat çöker. Gerçek bölümlerde operasyonlar bazen ters teper (⚠ %).';
+    return ok?'Harika! Seans birazdan kapanacak.':'④ Kalan malı da sat, kâr hedefini tuttur.';}
+  if(t===3){if(!s.shorted)return '① Elinde mal yokken SAT\'a bas: bu açığa satıştır. Tahtanın %10\'u kadar açığa sat.';
+    if(!s.dropped)return '② İşlem sekmesinde "Ayı baskını" ve "Sahte satış duvarı" ile fiyatı mor düşüş çizgisinin altına indir.';
+    if(!s.covered)return '③ Fiyat dipte! Şimdi AL\'a bas: açığın kapanır, aradaki fark senin kârın.';
+    return ok?'Eğitim bitti! Gerçek bölümlerde SPK ve halk seni izliyor olacak.':'Kâr hedefini tuttur.';}
+  return '';}
 function phaseDefs(){var t=M&&M.type||'pump',s=S;
   if(G&&G.mode==='free')return [];
   if(t==='short')return [['AÇIĞA SAT',s.shorted],['DÜŞÜR',s.dropped],['KAPAT',s.covered]];
@@ -610,7 +639,7 @@ function newRun(mode){G={mode:mode||'story',day:0,abroad:0,radar:0,anger:0,press
 function startDay(i){
   G.day=i;M=G.mode==='free'?G.freeM:MISSIONS[i];S=mkStock(M);
   G.cash=M.budget;G.pnl=0;G.tick=0;G.cds={};G.use={};G.ev={};userPaused=false;
-  var T=dayT();G.shocks=[Math.round(T*(0.12+Math.random()*0.25)),Math.round(T*(0.45+Math.random()*0.35))];if(G.mode==='free')G.shocks.push(Math.round(T*(0.3+Math.random()*0.5)));
+  var T=dayT();G.shocks=[Math.round(T*(0.12+Math.random()*0.25)),Math.round(T*(0.45+Math.random()*0.35))];if(G.mode==='free')G.shocks.push(Math.round(T*(0.3+Math.random()*0.5)));if(M.tutorial)G.shocks=[];
   if($('breaking'))$('breaking').hidden=true;
   G.radar=Math.max(M.radarMin||0,G.radar*0.5);G.anger=G.anger*0.5;G.press=G.press*0.5;
   G.snap={abroad:G.abroad,radar:G.radar,anger:G.anger,press:G.press,victims:G.victims};
@@ -681,6 +710,7 @@ function step(){
 
 /* ---------- olaylar ---------- */
 function events(){
+  if(M&&M.tutorial)return;
   if(!$('ov').hidden)return;
   if(G.radar>=M.radar*0.65&&!G.ev.spk){G.ev.spk=1;modal(evSPK());return;}
   if(G.anger>=M.anger*0.6&&!G.ev.eylem){G.ev.eylem=1;modal(evEylem());return;}
@@ -748,7 +778,7 @@ function sell(){var s=S;if(G.over||paused)return;hap();if(s.lots<=0){shortSell()
     setTimeout(function(){if(!G.over)msg('halk',pick(names),'TERE kaçıyor! '+s.t+'\'yi ben de satıyorum, kim alırsa alsın!');},900);}s.hype=clamp(s.hype-lot/s.float*(s.hype>40?20:60));
   radarUp(lot/s.float*(s.hype<20?30:8));angerUp(lot/s.float*(s.hype<20?55:14));
   if(Math.random()<.35)flag('Satış','#ff4f66');if(s.lots<1)s.lots=0;ui();draw();}
-function oc(o){return G&&G.mode==='free'?o.c*0.2:o.c;}
+function oc(o){if(M&&M.tutorial)return 0;return G&&G.mode==='free'?o.c*0.2:o.c;}
 var BF={
  tg:['halk','Ekşi Sözlük','"VIP sinyal grubu" ekran görüntüleri ifşa oldu: %T pompalanıyor!'],
  bot:['halk','Bot avcısı','Bu yorumların hepsi bot! %T hesaplarının profil fotoğrafı aynı 😂'],
@@ -765,7 +795,7 @@ var BF={
  infneg:['inf','@ZenginOlTayfun','Takipçiler "geçen hafta al diyordun" diye isyan etti, kimse satmadı.'],
  kapneg:['news','Piyasa Haber','Kötü haber zaten fiyatlanmış; %T tepki alımıyla yükseliyor.'],
  shortrep:['news','Para Gündem','Açığa satıcı raporundaki rakamlar yanlış çıktı, %T sert yükseliyor.']};
-function bfChance(id){var o=OPS[id];if(!o||o.g==='def')return 0;var u=G.use[id]||0;
+function bfChance(id){var o=OPS[id];if(!o||o.g==='def'||(M&&M.tutorial))return 0;var u=G.use[id]||0;
   return Math.min(0.45,(o.bf||0.1)+u*0.04+G.press/500+(S.burnt?0.1:0)+(id==='kap'?S.kap*0.1:0));}
 function backfire(id){hap(1);var s=S,o=OPS[id],down=o.g==='down',x=BF[id];
   if(down){s.price*=1+(0.03+Math.random()*0.04);s.flow=Math.min(1,Math.max(0,s.flow)+0.5);s.hype=clamp(s.hype+10);radarUp(3);}
@@ -852,11 +882,13 @@ function goalState(){
     g.push(pnl);}
   return g.concat(lim);}
 function done(){if(G.mode==='free')return false;return goalState().every(function(x){return x.ok;});}
-var TYPE_N={pump:'Klasik vurgun',stealth:'Sessiz toplama',founder:'Kurucu satışı',short:'Ayı avı',ipo:'Halka arz',defend:'Savunma',twice:'Testere'};
+var NT=3;
+function chLabel(i){var m=MISSIONS[i];return m&&m.tutorial?('Eğitim '+m.tutorial+'/'+NT):('Bölüm '+(i+1-NT)+'/'+(MISSIONS.length-NT));}
+var TYPE_N={tut:'Eğitim',pump:'Klasik vurgun',stealth:'Sessiz toplama',founder:'Kurucu satışı',short:'Ayı avı',ipo:'Halka arz',defend:'Savunma',twice:'Testere'};
 function taskCard(m,i){
   var c=document.createElement('div');c.className='task';
   add(c,'span','stamp',m.free?'SERBEST':'GİZLİ');
-  var h=add(c,'div','th');add(h,'div','logo-t',m.t.slice(0,3));var hh=add(h,'div');add(hh,'small','',m.free?'Serbest mod · 5 dakika':'Bölüm '+(i+1)+'/'+MISSIONS.length+' · '+TYPE_N[m.type||'pump']);add(hh,'b','',m.n);
+  var h=add(c,'div','th');add(h,'div','logo-t',m.t.slice(0,3));var hh=add(h,'div');add(hh,'small','',m.free?'Serbest mod · 5 dakika':chLabel(i)+' · '+(m.tutorial?'Eğitim':TYPE_N[m.type||'pump']));add(hh,'b','',m.n);
   add(c,'q','',m.task);
   var ch=add(c,'div','chips');
   (m.free?[['Başlangıç',money(m.budget),''],['Süre','5 dakika','g'],['SPK limiti','%'+m.radar,'r'],['Öfke limiti','%'+m.anger,'a']]:
@@ -874,16 +906,17 @@ function closeDay(timeUp){
     var crash=Math.round(Math.min(40,S.pubLots/S.float*30*(1+S.kap*0.5)));G.anger=clamp(G.anger+crash);
     var D=$('dlg');D.innerHTML='';
     var last=G.day===MISSIONS.length-1;
-    add(D,'div','eyebrow','Bölüm '+(G.day+1)+' · seans kapandı');add(D,'div','big','GÖREV TAMAM');
+    add(D,'div','eyebrow',chLabel(G.day)+' · seans kapandı');add(D,'div','big',M.tutorial?'EĞİTİM TAMAM':'GÖREV TAMAM');
     add(D,'p','',last?'Son vurgun da tamam. Jet pistte, motorlar çalışıyor.':'Yönetim kurulu memnun. '+M.n+' hissesi halkın elinde kaldı.');
     res(D,[['Bugünkü kâr',money(G.pnl)],['CEO primi (kârın %50\'si) → kaçış fonu',money(prim)],['Kasada kalan (şirkete kaldı)',money(left)],['Kaçış fonu toplamı',money(G.abroad)],['Toplam mağdur',tl.format(G.victims)+' kişi'],['Seans sonrası '+M.t+' çöktü: halk öfkesi','+'+crash+(S.kap?' (KAP yalanı yüzünden fazla)':'')],['Yarına devreden öfke / radar','%'+Math.round(G.anger*0.5)+' / %'+Math.round(G.radar*0.5)]]);
     unlock(G.day+1);
-    var b=add(D,'button','go',last?'✈ Jete bin':'▶ Reklam izle, sonraki bölüme geç');b.onclick=function(){if(last){gameOver('final');return;}b.disabled=true;Ads.rewarded('chapter').then(function(){brief(G.day+1);});};
+    var noAd=!!M.tutorial,nextTut=MISSIONS[G.day+1]&&MISSIONS[G.day+1].tutorial;
+    var b=add(D,'button','go',last?'✈ Jete bin':noAd?(nextTut?'Sonraki eğitime geç':'▶ İlk bölüme geç'):'▶ Reklam izle, sonraki bölüme geç');b.onclick=function(){if(last){gameOver('final');return;}b.disabled=true;(noAd?Promise.resolve(true):Ads.rewarded('chapter')).then(function(){brief(G.day+1);});};
     $('ov').hidden=false;setPauseLabel();
   }else if(timeUp){
     paused=true;var D2=$('dlg');D2.innerHTML='';
     add(D2,'div','eyebrow','Seans kapandı');add(D2,'div','big','GÖREV BAŞARISIZ');
-    loseLife();add(D2,'p','','Yönetim kurulu hedeflere ulaşılamadığı için çok kızgın. Bir canın gitti.');
+    if(!M.tutorial)loseLife();add(D2,'p','',M.tutorial?'Sorun değil, eğitimi tekrar deneyebilirsin.':'Yönetim kurulu hedeflere ulaşılamadığı için çok kızgın. Bir canın gitti.');
     var ul=add(D2,'ul','dgoals');goalState().forEach(function(x){add(ul,'li','',(x.ok?'✓ ':'✕ ')+x.t+' — '+x.v);});
     var bt=add(D2,'div','btns');lifeButton(bt,'Bölümü tekrar oyna',function(){restartDay();$('ov').hidden=true;paused=false;setPauseLabel();},function(){closeDay(true);});
     var q=add(bt,'button','sec','Bırak ve kaç');q.onclick=function(){gameOver('quit');};
@@ -912,11 +945,11 @@ function buildOps(){var E=$('ops');E.innerHTML='';var prev=G.mode!=='free'&&G.da
   var h=add(E,'div','opg opg-'+gr[0]);add(h,'span','ms',gr[1]);h.appendChild(document.createTextNode(gr[2]));
   ids.forEach(function(id){var o=OPS[id],b=document.createElement('button');b.className='op '+(o.cls||'')+(prev.indexOf(id)<0?' new':'');b.dataset.op=id;
   b.innerHTML='<span class="ic"></span><b></b><span class="c"></span><small></small><span class="rk"></span><span class="cd"></span>';
-  var ic=b.querySelector('.ic');ic.className='ic ms t-'+o.tn;ic.textContent=o.ic;b.querySelector('b').textContent=o.n;b.querySelector('.c').textContent=o.c?money(oc(o)):'bedava';
+  var ic=b.querySelector('.ic');ic.className='ic ms t-'+o.tn;ic.textContent=o.ic;b.querySelector('b').textContent=o.n;b.querySelector('.c').textContent=oc(o)?money(oc(o)):'bedava';
   b.querySelector('small').textContent=o.d;b.onclick=function(){runOp(id)};E.appendChild(b);});});}
 function ui(){
   var s=S;
-  $('day').textContent=(G.day+1)+'/'+MISSIONS.length;drawLives();$('cash').textContent=money(G.cash);$('abroad').textContent=money(G.abroad);
+  $('dayLbl').textContent=G.mode==='free'||M.tutorial?'':'Bölüm';$('day').textContent=M.tutorial?('Eğitim '+M.tutorial):((G.day+1-NT)+'/'+(MISSIONS.length-NT));drawLives();$('cash').textContent=money(G.cash);$('abroad').textContent=money(G.abroad);
   var p=$('pnl');p.innerHTML='';add(p,'span','',money(G.pnl));if(G.mode!=='free'){add(p,'span','pg',' / '+money(M.goal));}p.className=G.mode!=='free'&&G.pnl>=M.goal?'hit':G.pnl>=0?'up':'down';$('pnlLbl').textContent=G.mode==='free'?'Net kâr':'Kâr / min. kâr';
   $('mRadar').style.width=G.radar+'%';$('mPress').style.width=G.press+'%';$('mAnger').style.width=G.anger+'%';$('mHype').style.width=s.hype+'%';
   var fl=$('mFlow'),fv=s.flow||0;fl.style.width=Math.abs(fv)*50+'%';fl.style.left=fv>=0?'50%':(50+fv*50)+'%';fl.style.background=fv>=0?'var(--up)':'var(--down)';
@@ -931,13 +964,14 @@ function ui(){
   $('avg').textContent=sh?pr(sa):s.lots?pr(avg):'—';
   var u=sh?s.shortLots*(sa-s.price):s.lots*(s.price-avg),ue=$('upnl');ue.textContent=money(u);ue.className=u>=0?'up':'down';
   $('share').textContent='%'+Math.round(s.lots/s.float*100);$('publ').textContent=tl.format(s.pubLots);
+  var co=$('coach');if(co){var ct=G.mode!=='free'&&M.tutorial?coachText():'';co.hidden=!ct;if(ct&&$('coachT').textContent!==ct){$('coachT').textContent=ct;co.classList.remove('pop');void co.offsetWidth;co.classList.add('pop');}}
   var pd=phaseDefs(),ph=$('phase'),cur=pd.map(function(x){return x[1];}).indexOf(false);if(ph.children.length!==pd.length||ph.dataset.k!==pd.map(function(x){return x[0];}).join()){ph.innerHTML='';ph.dataset.k=pd.map(function(x){return x[0];}).join();pd.forEach(function(x,i){add(ph,'span','',(i+1)+' '+x[0]);});}pd.forEach(function(x,i){ph.children[i].className=x[1]?'done':i===cur?'on':'';});
   var left=Math.max(0,dayT()-G.tick)*TICK/1000;$('clock').textContent=String(Math.floor(left/60)).padStart(2,'0')+':'+String(Math.floor(left%60)).padStart(2,'0');
   $('clock').style.color=left<30?'var(--siren)':'';$('chClockT').textContent=$('clock').textContent;$('chClock').classList.toggle('late',left<30);
   var gl=$('goals');gl.innerHTML='';goalState().forEach(function(x){var li=add(gl,'li',x.warn?'warn':x.ok?'ok':'no');add(li,'i','',x.warn?'!':x.ok?'✓':'○');add(li,'span','',x.t);add(li,'small','',x.v);});
   var bc=$('bClose');bc.className='closebtn'+(done()?' ready':'');bc.textContent=G.mode==='free'?'Seans 5 dakika sürer. Kapanışta elinde kalan mal %15 iskontoyla bozdurulur.':'Tüm hedefler tamamlanınca seans otomatik kapanır. Süre biterse görev başarısız olur.';
   document.querySelectorAll('.op').forEach(function(b){var o=OPS[b.dataset.op],cd=G.cds[b.dataset.op]||0;
-    b.querySelector('.cd').style.width=(cd/o.cd*100)+'%';b.classList.toggle('cool',cd>0);b.classList.toggle('poor',cd<=0&&G.cash<oc(o));b.querySelector('.c').textContent=cd>0?Math.ceil(cd*TICK/1000)+' sn':(o.c?money(oc(o)):'bedava');var bf=bfChance(b.dataset.op);b.querySelector('small').textContent=o.d+(o.g!=='def'?' · ters tepme %'+Math.round(bf*100):'');b.querySelector('.rk').textContent=o.g!=='def'?'⚠ %'+Math.round(bf*100):'';});
+    b.querySelector('.cd').style.width=(cd/o.cd*100)+'%';b.classList.toggle('cool',cd>0);b.classList.toggle('poor',cd<=0&&G.cash<oc(o));b.querySelector('.c').textContent=cd>0?Math.ceil(cd*TICK/1000)+' sn':(oc(o)?money(oc(o)):'bedava');var bf=bfChance(b.dataset.op);b.querySelector('small').textContent=o.d+(o.g!=='def'?' · ters tepme %'+Math.round(bf*100):'');b.querySelector('.rk').textContent=o.g!=='def'?'⚠ %'+Math.round(bf*100):'';});
 }
 
 /* ---------- grafik ---------- */
@@ -993,8 +1027,8 @@ function intro(){
   var bt=add(D,'div','m-btns');
   var cp=null;try{cp=JSON.parse(lsGet('tere_cp','null'));}catch(e){}
   function big(cls,icon,title,sub,fn){var b=add(bt,'button','m-btn '+cls);var ic=add(b,'span','ms',icon);var tx=add(b,'span','m-tx');add(tx,'b','',title);if(sub)add(tx,'small','',sub);b.onclick=fn;return b;}
-  if(cp&&cp.day>0)big('gold','play_arrow','Devam et','Bölüm '+(cp.day+1)+' / '+MISSIONS.length,function(){D.className='dlg';continueFrom(cp);});
-  big(cp&&cp.day>0?'':'gold','auto_stories',cp&&cp.day>0?'Yeni hikâye':'Hikâye modu','10 bölüm · 7 farklı oyun türü',function(){D.className='dlg';lsSet('tere_cp','null');newRun();brief(0);});
+  if(cp&&cp.day>0)big('gold','play_arrow','Devam et',chLabel(cp.day),function(){D.className='dlg';continueFrom(cp);});
+  big(cp&&cp.day>0?'':'gold','auto_stories',cp&&cp.day>0?'Yeni hikâye':'Hikâye modu','3 eğitim + 10 bölüm',function(){D.className='dlg';lsSet('tere_cp','null');newRun();brief(maxCh()>=NT?NT:0);});
   big('','format_list_numbered','Bölüm seç','Açtığın bölümden başla',chapters);
   big('','bolt','Serbest mod','10M TL · 5 dakika',function(){D.className='dlg';startFree();});
   var row=add(bt,'div','m-row');
@@ -1007,8 +1041,8 @@ function chapters(){
   var D=$('dlg');D.className='dlg menu';D.innerHTML='';
   add(D,'div','eyebrow','Hikâye modu');add(D,'h2','','Bölüm seç').style.color='var(--gold)';
   var bt=add(D,'div','m-btns');
-  var mx=maxCh();MISSIONS.forEach(function(m,i){var lock=i>mx;var b=add(bt,'button','m-btn ch'+(lock?' lock':''));var n=add(b,'span','ch-n'+(lock?' ms':''),lock?'lock':String(i+1));var tx=add(b,'span','m-tx');add(tx,'b','',m.n);
-    add(tx,'small','',TYPE_N[m.type||'pump']+(lock?' · önceki bölümü bitir':' · SPK %'+m.radar));
+  var mx=Math.max(maxCh(),NT);MISSIONS.forEach(function(m,i){var lock=i>mx;var b=add(bt,'button','m-btn ch'+(lock?' lock':''));var n=add(b,'span','ch-n'+(lock?' ms':''),lock?'lock':(m.tutorial?'E'+m.tutorial:String(i+1-NT)));var tx=add(b,'span','m-tx');add(tx,'b','',m.n);
+    add(tx,'small','',(m.tutorial?'Eğitim · reklamsız':TYPE_N[m.type||'pump'])+(lock?' · önceki bölümü bitir':''));
     b.onclick=function(){if(lock)return;D.className='dlg';newRun();brief(i);};});
   var bk=add(D,'div','btns');var b=add(bk,'button','sec','Geri');b.onclick=intro;
   add(D,'p','fine','Bir bölümü bitirince sonraki açılır. Ortadan başlarsan kaçış fonun sıfırdan başlar.');
@@ -1058,7 +1092,7 @@ function gameOver(kind){$('dlg').className='dlg';hap(1);
   G.over=true;paused=true;var D=$('dlg');D.innerHTML='';
   var full=kind==='final'||kind==='jet'||kind==='quit';
   var score=full?G.abroad*(kind==='final'?1.2:1):G.abroad*0.5;
-  if(!full&&!G.lifeTaken){G.lifeTaken=1;loseLife();}
+  if(!full&&!G.lifeTaken&&!M.tutorial){G.lifeTaken=1;loseLife();}
   var head={final:'BÜYÜK KAÇIŞ',jet:'KAÇTIN',quit:'KAÇTIN',raid:'BASKIN!',anger:'HALK AYAKTA',margin:'TEMİNAT ÇAĞRISI'}[kind];
   var text={final:'On bölümün sonunda jet gece yarısı kalktı. Arkanda binlerce mağdur ve boş bir plaza kaldı. Tamamlama bonusu: kaçış fonu ×1,2.',
     jet:'Özel jet gece yarısı kalktı. Ofiste kimse yok, telefonlar susmuyor.',quit:'Yönetim kurulunu beklemeden kaçtın. Ofiste kimse yok, telefonlar susmuyor.',
@@ -1068,7 +1102,7 @@ function gameOver(kind){$('dlg').className='dlg';hap(1);
   var h=add(D,'div','big',head);h.style.color=full?'var(--gold)':kind==='anger'?'var(--anger)':'var(--siren)';
   add(D,'p','',text);
   var rank=!full?'Yakalandın':score<80e6?'Kaçak muhasebeci':score<250e6?'Dubai\'de villa':score<600e6?'Ada sahibi':'Efsane: belgeseli çekilecek';
-  res(D,[['Unvan',rank],['Kaçırılan para',money(score)],['Mağdur yatırımcı',tl.format(G.victims)+' kişi'],['Tamamlanan bölüm',(G.day+(kind==='final'?1:0))+' / '+MISSIONS.length]]);
+  res(D,[['Unvan',rank],['Kaçırılan para',money(score)],['Mağdur yatırımcı',tl.format(G.victims)+' kişi'],['Tamamlanan bölüm',Math.max(0,G.day+(kind==='final'?1:0)-NT)+' / '+(MISSIONS.length-NT)]]);
   var entry={money:Math.round(score),victims:G.victims,days:G.day+(kind==='final'?1:0),ts:Date.now()};
   var sv=add(D,'div','save');var inp=add(sv,'input');inp.id='nick';inp.maxLength=24;inp.placeholder='Takma adın, örn. Kurt CEO';inp.value=lsGet('tere_nick','');
   var sb=add(sv,'button','go','Skoru kaydet');var note=add(D,'p','fine','');
@@ -1076,7 +1110,7 @@ function gameOver(kind){$('dlg').className='dlg';hap(1);
     saveLB(entry).then(function(where){showLB(where==='local'?'Paylaşılan tabloya yazılamadı; skorun bu tarayıcıdaki tabloya kaydedildi.':null,null,entry);});};
   inp.oninput=function(){note.textContent='';};
   var bt=add(D,'div','btns');
-  if(!full){var cpd=CP;if(cpd){lifeButton(bt,'Bölüm '+(cpd.day+1)+'\'den devam et',function(){continueFrom(cpd);},function(){gameOver(kind);});}}
+  if(!full){var cpd=CP;if(cpd){lifeButton(bt,chLabel(cpd.day).split('/')[0]+' baştan',function(){continueFrom(cpd);},function(){gameOver(kind);});}}
   else{lsSet('tere_cp','null');CP=null;}
   var b=add(bt,'button','sec','Baştan oyna');b.onclick=function(){lsSet('tere_cp','null');CP=null;newRun();brief(0);};
   var l=add(bt,'button','sec','🏆 Liderlik tablosu');l.onclick=function(){showLB(null,function(){gameOver(kind);},null);};
@@ -1093,6 +1127,7 @@ function drawLives(){var e=$('lives');if(!e)return;var n=lives(),h='';for(var i=
 function maxCh(){var v=parseInt(lsGet('bv_maxch','0'),10);return isNaN(v)?0:v;}
 function unlock(i){if(i>maxCh()&&i<MISSIONS.length)lsSet('bv_maxch',String(i));}
 function lifeButton(parent,label,onPlay,onBack){
+  if(M&&M.tutorial){var tb=add(parent,'button','go',label);tb.onclick=onPlay;return;}
   var n=lives();
   if(n>0){var b=add(parent,'button','go',label+' · ❤ '+n);b.onclick=onPlay;return;}
   var w=add(parent,'button','go','▶ Reklam izle, +1 can');add(parent,'p','fine','Canın bitti. Canlar her gün yenilenir.');
@@ -1167,7 +1202,7 @@ function showLB(notice,back,mine,mode){$('dlg').className='dlg';
     var body=add(tb,'tbody');
     if(!r.rows.length){var tr=add(body,'tr');var td=add(tr,'td','','Henüz kimse kaçmadı. İlk vurgun senin olsun.');td.colSpan=5;}
     r.rows.forEach(function(x,i){var tr=add(body,'tr',(LB.uid&&x.id===LB.uid)||(mine&&!r.shared&&x.ts===mine.ts)?'me':'');
-      add(tr,'td','',String(i+1));add(tr,'td','',x.name||'İsimsiz');add(tr,'td','n',money(x.money));add(tr,'td','n',tl.format(x.victims));add(tr,'td','n',free?(x.stock||'—'):(x.days||0)+'/5');});
+      add(tr,'td','',String(i+1));add(tr,'td','',x.name||'İsimsiz');add(tr,'td','n',money(x.money));add(tr,'td','n',tl.format(x.victims));add(tr,'td','n',free?(x.stock||'—'):Math.max(0,(x.days||0)-NT)+'/'+(MISSIONS.length-NT));});
     wait.replaceWith(tb);
     if(!r.shared)D.insertBefore(Object.assign(document.createElement('p'),{className:'fine',textContent:'Bu tablo yalnızca bu tarayıcıdaki skorları gösteriyor.'}),bt);
   });
@@ -1201,6 +1236,6 @@ setInterval(step,TICK);
 </script>
 
 <script>if('serviceWorker' in navigator&&!(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform())){addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
-<!-- build 7c278ef37b -->
+<!-- build db72ff4df4 -->
 </body>
 </html>
