@@ -541,6 +541,9 @@ var MISSIONS=[
  {type:'defend',floor:0.85,t:'BALON',n:'Balon Teknoloji',p:6.00,f:60e6,budget:60e6,startLots:15e6,startCost:5.8,time:320,goal:0,radar:75,anger:60,hm:1,vol:1,ops:['tg','bot','inf','news','fake','kap','tv','star','wash','tavan','short','spoof','infneg','kapneg','shortrep','fon','hide','law','pr'],
   task:'Balon Teknoloji\'deki dev pozisyonun bankada teminatta. Rakip fon tahtaya saldırıyor. Fiyat tabanın altına inerse bankalar her şeyini satar. Seans sonuna kadar fiyatı koru!',
   brief:'Savunma bölümü: kâr hedefi yok, hayatta kal. Rakip fon aralıklarla sert satış yapacak; AL ve "Fiyatı yükselt" operasyonlarıyla grafikteki kırmızı TABAN çizgisinin üstünde kal.'},
+ {type:'range',band:[0.88,1.14],victimGoal:2500,fund0:1.01,t:'PINPN',n:'Pinpon Turizm',p:5.00,f:25e6,budget:25e6,startLots:5e6,startCost:5.0,goal:4e6,radar:80,anger:65,hm:1,vol:1.4,time:420,ops:['tg','bot','inf','news','short','spoof','infneg','hide','law','pr'],
+  task:'Pinpon Turizm\'de bant ticareti: fiyatı kırmızı TABAN ile mor TAVAN arasında tut. Dipten al, tepeden halka sat, tekrar et. En az 4 milyon kâr ve 2.500 yeni "yatırımcı".',
+  brief:'Bant bölümü: fiyat bir an bandın dışına taşarsa uyarı alırsın; birkaç saniye dışarıda kalırsa bölüm biter. Halk dalga gibi alıp satıyor: fiyat tavanla taban arasında gidip gelir. Dipte AL, tepede SAT; senin alımın fiyatı yukarı, satışın aşağı iter. Balinalar ara ara fiyatı bandın dışına itmeye çalışacak.'},
  {type:'twice',t:'ZIPZP',n:'Zıpzıp Oyuncak',p:2.20,f:50e6,budget:40e6,goal:22e6,pump:1.45,radar:75,anger:60,hm:1.1,vol:1.1,time:480,ops:['tg','bot','inf','news','fake','kap','tv','star','wash','tavan','short','spoof','infneg','kapneg','shortrep','fon','hide','law','pr'],
   task:'Zıpzıp Oyuncak\'ta testere yapacağız: iki kez topla, iki kez pompala, iki kez boşalt. Halk ikinci seferde daha temkinli olacak. En az 22 milyon kâr.',
   brief:'Testere bölümü: bir turu bitirince aşamalar sıfırlanır, aynı hissede ikinci turu yaparsın. Seans daha uzun.'},
@@ -633,6 +636,7 @@ function phaseDefs(){var t=M&&M.type||'pump',s=S;
   if(t==='short')return [['AÇIĞA SAT',s.shorted],['DÜŞÜR',s.dropped],['KAPAT',s.covered]];
   if(t==='ipo')return [['SAT',s.dumped]];
   if(t==='defend')return [['SAVUN',G.tick>=dayT()]];
+  if(t==='range')return [['BANTTA TUT',G.tick>=dayT()]];
   var pre=t==='twice'?('T'+Math.min(2,s.cycles+1)+' '):'';
   return [[pre+(t==='stealth'?'SESSİZ TOPLA':'TOPLA'),s.collected],[pre+'POMPALA',s.pumped],[pre+'BOŞALT',s.dumped]];}
 function newRun(mode){G={mode:mode||'story',day:0,abroad:0,radar:0,anger:0,press:4,victims:0,totalPnl:0,over:false,retries:0};}
@@ -649,6 +653,7 @@ function startDay(i){
   msg('news','Piyasa Haber','Seans açıldı. '+M.n+' ('+M.t+') bugün de sessiz.');
   msg('halk',pick(names),'Bankadaki faiz yetmiyor, borsada ne alsam?');
   if(M.type==='defend')M.floorP=S.open0*M.floor;
+  if(M.type==='range'){M.lowP=S.open0*M.band[0];M.highP=S.open0*M.band[1];G.outT=0;}
   buildMission();buildOps();ui();draw();
 }
 function continueFrom(cp){newRun();G.lifeTaken=0;G.abroad=cp.abroad;G.victims=cp.victims;G.totalPnl=cp.totalPnl||0;G.radar=cp.radar;G.anger=cp.anger;G.press=cp.press;
@@ -696,6 +701,12 @@ function step(){
   G.radar=clamp(G.radar-0.03+(G.anger>M.anger*0.6?0.04:0));G.press=clamp(G.press*0.993+(G.anger>M.anger*0.6?0.05:0));
   G.anger=clamp(G.anger-0.01);
   updatePhases();
+  if(M&&M.type==='range'&&G.mode!=='free'){
+    S.price*=1+(18-S.hype)*0.00026*(S.burnt?0.4:1);
+    var wv=S.open0*(1.01+0.16*Math.sin(G.tick/22));S.price*=1+(wv-S.price)/S.price*0.03;
+    if(G.tick%55===40){var up=Math.random()<0.5;S.price*=up?1.04:0.96;S.flow=Math.max(-1,Math.min(1,S.flow+(up?0.5:-0.5)));flag('Balina',up?'#2fd08c':'#ff4f66');card({ic:'waves',tone:up?'good':'bad',title:up?'Balina alıyor!':'Balina satıyor!',text:'Fiyat '+(up?'tavana':'tabana')+' doğru itiliyor. Bantta tut!',chip:up?'+%4':'−%4'});}
+    var outB=S.price<M.lowP||S.price>M.highP;
+    if(outB){G.outT=(G.outT||0)+1;if(G.outT===1)card({ic:'warning',tone:'bad',title:'Bandın dışındasın!',text:'Fiyatı hemen '+(S.price>M.highP?'aşağı (SAT)':'yukarı (AL)')+' çek. Birkaç saniyen var.'});if(G.outT>=12){gameOver('band');return;}}else G.outT=0;}
   if(M&&M.type==='defend'&&G.mode!=='free'){if(G.tick%50===30){S.price*=0.96;S.flow=Math.max(-1,S.flow-0.6);S.hype=clamp(S.hype*0.7);flag('Rakip','#ff4f66');card({ic:'swords',tone:'bad',title:'Rakip fon satıyor!',text:M.n+' tahtasına dev satış emri geldi. Fiyatı tut!',chip:'−%4'});}
     if(S.price<M.floorP){gameOver('margin');return;}}
   if(G.shocks&&G.shocks.indexOf(G.tick)>=0)shock();
@@ -872,6 +883,10 @@ function goalState(){
        {ok:s.dropped,t:'2 · Düşür: fiyatı hedefin altına indir',v:s.dropped?'tamam':s.shorted?('hedef '+pr(s.target)+' · şu an '+pr(s.price)):'önce açığa sat'},
        {ok:s.covered,t:'3 · Kapat: açık pozisyonu kapat',v:s.covered?'tamam':s.dropped?(tl.format(s.shortLots)+' lot açık'):'önce düşür'},pnl];}
   else if(t==='ipo'){g=[{ok:s.dumped,t:'1 · Sat: malın %90\'ını halka sat',v:s.dumped?'tamam':'%'+Math.round(dumped*100)+' satıldı'},pnl];}
+  else if(t==='range'){var gained=G.victims-(G.snap?G.snap.victims:0);
+    g=[{ok:true,warn:s.price<M.lowP*1.03||s.price>M.highP*0.97,t:'Fiyatı '+pr(M.lowP)+' – '+pr(M.highP)+' bandında tut',v:'şu an '+pr(s.price)},
+       {ok:G.tick>=dayT(),t:'Seans sonuna kadar dayan',v:Math.max(0,Math.ceil((dayT()-G.tick)*TICK/1000))+' sn kaldı'},
+       pnl,{ok:gained>=M.victimGoal,t:'En az '+tl.format(M.victimGoal)+' yeni yatırımcıya mal sat',v:tl.format(gained)+' / '+tl.format(M.victimGoal)}];}
   else if(t==='defend'){var fl=M.floorP||0;g=[{ok:true,warn:s.price<fl*1.04,t:'Fiyat '+pr(fl)+' tabanının altına inmesin',v:'şu an '+pr(s.price)},
        {ok:G.tick>=dayT(),t:'Seans sonuna kadar dayan',v:Math.max(0,Math.ceil((dayT()-G.tick)*TICK/1000))+' sn kaldı'}];}
   else{var pre=t==='twice'?('Tur '+Math.min(2,s.cycles+1)+'/2 · '):'';
@@ -884,7 +899,7 @@ function goalState(){
 function done(){if(G.mode==='free')return false;return goalState().every(function(x){return x.ok;});}
 var NT=3;
 function chLabel(i){var m=MISSIONS[i];return m&&m.tutorial?('Eğitim '+m.tutorial+'/'+NT):('Bölüm '+(i+1-NT)+'/'+(MISSIONS.length-NT));}
-var TYPE_N={tut:'Eğitim',pump:'Klasik vurgun',stealth:'Sessiz toplama',founder:'Kurucu satışı',short:'Ayı avı',ipo:'Halka arz',defend:'Savunma',twice:'Testere'};
+var TYPE_N={tut:'Eğitim',range:'Bant ticareti',pump:'Klasik vurgun',stealth:'Sessiz toplama',founder:'Kurucu satışı',short:'Ayı avı',ipo:'Halka arz',defend:'Savunma',twice:'Testere'};
 function taskCard(m,i){
   var c=document.createElement('div');c.className='task';
   add(c,'span','stamp',m.free?'SERBEST':'GİZLİ');
@@ -984,7 +999,8 @@ function draw(){
   var hi=-1e9,lo=1e9,vmax=1;vis.forEach(function(k){hi=Math.max(hi,k.h);lo=Math.min(lo,k.l);vmax=Math.max(vmax,k.v);});
   var avg=s.lots?s.cost/s.lots:0;if(avg&&avg>lo*0.6){hi=Math.max(hi,avg);lo=Math.min(lo,avg);}
   var isShort=M&&M.type==='short',tgt=isShort?(s.shorted&&!s.dropped?s.target:0):(s.collected&&!s.pumped?s.target:0);if(tgt){hi=Math.max(hi,tgt);lo=Math.min(lo,tgt);}
-  var floorP=M&&M.type==='defend'?M.floorP:0;if(floorP)lo=Math.min(lo,floorP*0.98);
+  var floorP=M&&M.type==='defend'?M.floorP:(M&&M.type==='range'?M.lowP:0);if(floorP)lo=Math.min(lo,floorP*0.98);
+  var ceilP=M&&M.type==='range'?M.highP:0;if(ceilP)hi=Math.max(hi,ceilP*1.02);
   var pad=(hi-lo)*0.14||0.1;hi+=pad;lo-=pad;
   var Y=function(v){return 14+(hi-v)/(hi-lo)*(chH-14)},cw=(W-axis)/n,bw=Math.max(2,cw*0.66);
   ctx.fillStyle='rgba(154,164,189,.07)';ctx.font='54px Bungee, Impact';ctx.textAlign='center';ctx.fillText(s.t,(W-axis)/2,chH/2+18);
@@ -1003,6 +1019,7 @@ function draw(){
   if(tgt){var yt=Y(tgt);ctx.setLineDash([8,4]);ctx.strokeStyle='#c98bff';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,yt);ctx.lineTo(W-axis,yt);ctx.stroke();ctx.setLineDash([]);ctx.lineWidth=1;
     ctx.fillStyle='#c98bff';ctx.font='700 11px JetBrains Mono, monospace';ctx.textAlign='left';ctx.fillText((isShort?'DÜŞÜŞ HEDEFİ ':'POMPALA HEDEFİ ')+tgt.toFixed(2).replace('.',','),6,yt-5);}
   if(floorP){var yf=Y(floorP);ctx.setLineDash([8,4]);ctx.strokeStyle='#ff4f66';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,yf);ctx.lineTo(W-axis,yf);ctx.stroke();ctx.setLineDash([]);ctx.lineWidth=1;ctx.fillStyle='#ff4f66';ctx.font='700 11px JetBrains Mono, monospace';ctx.textAlign='left';ctx.fillText('TABAN '+floorP.toFixed(2).replace('.',','),6,yf+14);}
+  if(ceilP){var yc=Y(ceilP);ctx.setLineDash([8,4]);ctx.strokeStyle='#c98bff';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,yc);ctx.lineTo(W-axis,yc);ctx.stroke();ctx.setLineDash([]);ctx.lineWidth=1;ctx.fillStyle='#c98bff';ctx.font='700 11px JetBrains Mono, monospace';ctx.textAlign='left';ctx.fillText('TAVAN '+ceilP.toFixed(2).replace('.',','),6,yc-5);}
   var yp=Y(s.price),lc=s.cur.c>=s.cur.o?'#2fd08c':'#ff4f66';ctx.strokeStyle=lc;ctx.setLineDash([2,3]);ctx.beginPath();ctx.moveTo(0,yp);ctx.lineTo(W-axis,yp);ctx.stroke();ctx.setLineDash([]);
   ctx.fillStyle=lc;ctx.fillRect(W-axis+2,yp-9,axis-4,18);ctx.fillStyle='#0b0e15';ctx.font='700 11px JetBrains Mono, monospace';ctx.textAlign='left';ctx.fillText(s.price.toFixed(2).replace('.',','),W-axis+8,yp+4);
 }
@@ -1093,12 +1110,13 @@ function gameOver(kind){$('dlg').className='dlg';hap(1);
   var full=kind==='final'||kind==='jet'||kind==='quit';
   var score=full?G.abroad*(kind==='final'?1.2:1):G.abroad*0.5;
   if(!full&&!G.lifeTaken&&!M.tutorial){G.lifeTaken=1;loseLife();}
-  var head={final:'BÜYÜK KAÇIŞ',jet:'KAÇTIN',quit:'KAÇTIN',raid:'BASKIN!',anger:'HALK AYAKTA',margin:'TEMİNAT ÇAĞRISI'}[kind];
+  var head={final:'BÜYÜK KAÇIŞ',jet:'KAÇTIN',quit:'KAÇTIN',raid:'BASKIN!',anger:'HALK AYAKTA',margin:'TEMİNAT ÇAĞRISI',band:'BANT KIRILDI'}[kind];
   var text={final:'On bölümün sonunda jet gece yarısı kalktı. Arkanda binlerce mağdur ve boş bir plaza kaldı. Tamamlama bonusu: kaçış fonu ×1,2.',
     jet:'Özel jet gece yarısı kalktı. Ofiste kimse yok, telefonlar susmuyor.',quit:'Yönetim kurulunu beklemeden kaçtın. Ofiste kimse yok, telefonlar susmuyor.',
     raid:'Sabah 06:00. Kapı çaldı. Mahkeme kararıyla şirketin yönetimine el konuldu. Yurtdışı hesaplarının yarısı donduruldu.',
     anger:'Mağdur yatırımcılar plazayı sardı, havalimanı yolu kapandı. Gözaltına alındın; yurtdışı hesaplarının yarısı donduruldu.',
-    margin:'Fiyat tabanın altına indi. Bankalar teminattaki bütün hisselerini piyasaya döktü, her şey çöktü.'}[kind];
+    margin:'Fiyat tabanın altına indi. Bankalar teminattaki bütün hisselerini piyasaya döktü, her şey çöktü.',
+    band:'Fiyat bandın dışında kaldı. Ortaklar "tahtayı kontrol edemiyorsun" deyip seni masadan kaldırdı.'}[kind];
   var h=add(D,'div','big',head);h.style.color=full?'var(--gold)':kind==='anger'?'var(--anger)':'var(--siren)';
   add(D,'p','',text);
   var rank=!full?'Yakalandın':score<80e6?'Kaçak muhasebeci':score<250e6?'Dubai\'de villa':score<600e6?'Ada sahibi':'Efsane: belgeseli çekilecek';
@@ -1236,6 +1254,6 @@ setInterval(step,TICK);
 </script>
 
 <script>if('serviceWorker' in navigator&&!(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform())){addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
-<!-- build db72ff4df4 -->
+<!-- build 283d0b078a -->
 </body>
 </html>
