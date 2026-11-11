@@ -1045,7 +1045,7 @@ function intro(){
   var cp=null;try{cp=JSON.parse(lsGet('tere_cp','null'));}catch(e){}
   function big(cls,icon,title,sub,fn){var b=add(bt,'button','m-btn '+cls);var ic=add(b,'span','ms',icon);var tx=add(b,'span','m-tx');add(tx,'b','',title);if(sub)add(tx,'small','',sub);b.onclick=fn;return b;}
   if(cp&&cp.day>0)big('gold','play_arrow','Devam et',chLabel(cp.day),function(){D.className='dlg';continueFrom(cp);});
-  big(cp&&cp.day>0?'':'gold','auto_stories',cp&&cp.day>0?'Yeni hikâye':'Hikâye modu','3 eğitim + 10 bölüm',function(){D.className='dlg';lsSet('tere_cp','null');newRun();brief(maxCh()>=NT?NT:0);});
+  big(cp&&cp.day>0?'':'gold','auto_stories',cp&&cp.day>0?'Yeni hikâye':'Hikâye modu','3 eğitim + '+(MISSIONS.length-NT)+' bölüm',function(){D.className='dlg';lsSet('tere_cp','null');newRun();brief(maxCh()>=NT?NT:0);});
   big('','format_list_numbered','Bölüm seç','Açtığın bölümden başla',chapters);
   big('','bolt','Serbest mod','10M TL · 5 dakika',function(){D.className='dlg';startFree();});
   var row=add(bt,'div','m-row');
@@ -1254,6 +1254,6 @@ setInterval(step,TICK);
 </script>
 
 <script>if('serviceWorker' in navigator&&!(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform())){addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
-<!-- build 283d0b078a -->
+<!-- build 1069830b88 -->
 </body>
 </html>
