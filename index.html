@@ -1097,7 +1097,7 @@ function freeEnd(kind){$('dlg').className='dlg';hap(1);
   var sv=add(D,'div','save');var inp=add(sv,'input');inp.id='nick2';inp.maxLength=24;inp.placeholder='Takma adın, örn. Kurt CEO';inp.value=lsGet('tere_nick','');
   var sb=add(sv,'button','go','Skoru kaydet');var note=add(D,'p','fine','');
   sb.onclick=function(){var nm=inp.value.trim();if(!nm){note.textContent='Önce bir takma ad yaz.';note.style.color='var(--siren)';return;}note.style.color='';lsSet('tere_nick',nm);entry.name=nm;sb.disabled=true;sb.textContent='Kaydediliyor…';
-    saveLB(entry,'free').then(function(where){showLB(where==='local'?'Paylaşılan tabloya yazılamadı; skorun bu tarayıcıdaki tabloya kaydedildi.':null,null,entry,'free');});};
+    saveLB(entry,'free').then(function(where){showLB(where==='local'&&window.claude?'Paylaşılan tabloya yazılamadı; skorun bu tarayıcıdaki tabloya kaydedildi.':null,null,entry,'free');});};
   inp.oninput=function(){note.textContent='';};
   var bt=add(D,'div','btns');var b=add(bt,'button','sec','Tekrar oyna');b.onclick=startFree;
   var l=add(bt,'button','sec','🏆 Serbest mod tablosu');l.onclick=function(){showLB(null,function(){freeEnd(kind);},null,'free');};
@@ -1125,7 +1125,7 @@ function gameOver(kind){$('dlg').className='dlg';hap(1);
   var sv=add(D,'div','save');var inp=add(sv,'input');inp.id='nick';inp.maxLength=24;inp.placeholder='Takma adın, örn. Kurt CEO';inp.value=lsGet('tere_nick','');
   var sb=add(sv,'button','go','Skoru kaydet');var note=add(D,'p','fine','');
   sb.onclick=function(){var nm=inp.value.trim();if(!nm){note.textContent='Önce bir takma ad yaz.';note.style.color='var(--siren)';return;}note.style.color='';lsSet('tere_nick',nm);entry.name=nm;sb.disabled=true;sb.textContent='Kaydediliyor…';
-    saveLB(entry).then(function(where){showLB(where==='local'?'Paylaşılan tabloya yazılamadı; skorun bu tarayıcıdaki tabloya kaydedildi.':null,null,entry);});};
+    saveLB(entry).then(function(where){showLB(where==='local'&&window.claude?'Paylaşılan tabloya yazılamadı; skorun bu tarayıcıdaki tabloya kaydedildi.':null,null,entry);});};
   inp.oninput=function(){note.textContent='';};
   var bt=add(D,'div','btns');
   if(!full){var cpd=CP;if(cpd){lifeButton(bt,chLabel(cpd.day).split('/')[0]+' baştan',function(){continueFrom(cpd);},function(){gameOver(kind);});}}
@@ -1188,12 +1188,20 @@ function card(o){var box=$('cards');if(!box)return;var c=document.createElement(
 /* ---------- liderlik tablosu ---------- */
 var LB={db:null,uid:null,ready:null};
 LB.ready=(async function(){try{if(!window.claude||!window.claude.use)return;var db=await window.claude.use('db');var u=await window.claude.use('user');LB.db=db;if(u&&db)LB.uid=await u.id();}catch(e){}})();
+/* Game Center (yalnızca iPhone uygulamasında) */
+var GC={p:null,ok:false,name:''};
+(function(){try{var C=window.Capacitor;if(C&&C.isNativePlatform&&C.isNativePlatform()&&C.Plugins&&C.Plugins.GameCenter)GC.p=C.Plugins.GameCenter;}catch(e){}
+  if(GC.p)setTimeout(function(){gcAuth();},4000);})();
+function gcAuth(){if(!GC.p)return Promise.resolve(false);return GC.p.authenticate().then(function(r){GC.ok=!!(r&&r.authenticated);GC.name=(r&&r.playerName)||'';return GC.ok;}).catch(function(){return false;});}
+function gcId(mode){return mode==='free'?'borsadavurgun.serbest':'borsadavurgun.hikaye';}
+function gcSubmit(e,mode){if(!GC.p||!GC.ok||!(e&&e.money>0))return;GC.p.submitScore({leaderboardId:gcId(mode),score:Math.round(e.money)}).catch(function(){});}
+function gcShow(mode){if(!GC.p)return;(GC.ok?Promise.resolve(true):gcAuth()).then(function(ok){if(ok)GC.p.showLeaderboard({leaderboardId:gcId(mode)});else card({ic:'sports_esports',tone:'info',title:'Game Center kapalı',text:'Ayarlar → Game Center bölümünden giriş yapınca dünya tablosu açılır.'});});}
 function lbKey(mode){return mode==='free'?'tere_lb_free':'tere_lb';}
 function lbCol(mode){return mode==='free'?'free':'scores';}
 function localList(mode){try{return JSON.parse(lsGet(lbKey(mode),'[]'))||[];}catch(e){return [];}}
 function withTimeout(p,ms){return Promise.race([p,new Promise(function(_,rej){setTimeout(function(){rej(new Error('timeout'));},ms);})]);}
 async function saveLB(e,mode){
-  var L=localList(mode);L.push(e);L.sort(function(a,b){return b.money-a.money;});lsSet(lbKey(mode),JSON.stringify(L.slice(0,10)));
+  gcSubmit(e,mode);var L=localList(mode);L.push(e);L.sort(function(a,b){return b.money-a.money;});lsSet(lbKey(mode),JSON.stringify(L.slice(0,10)));
   try{await withTimeout(LB.ready,10000);if(!LB.db||!LB.uid)return 'local';
     var ref=LB.db.collection(lbCol(mode)).doc(LB.uid),old=await withTimeout(ref.get(),10000);
     if(!old.exists||(old.data().money||0)<e.money)await withTimeout(ref.set({name:e.name,money:e.money,victims:e.victims,days:e.days||0,stock:e.stock||'',ts:e.ts}),10000);
@@ -1211,6 +1219,7 @@ function showLB(notice,back,mine,mode){$('dlg').className='dlg';
   var wait=add(D,'p','','Tablo yükleniyor…');
   var bt=add(D,'div','btns');
   if(back){var bb=add(bt,'button','sec','Geri');bb.onclick=back;}
+  if(GC.p){var gb=add(bt,'button','sec','🌍 Game Center');gb.onclick=function(){gcShow(mode);};}
   var sw=add(bt,'button','sec',free?'Hikâye tablosu':'Serbest mod tablosu');sw.onclick=function(){showLB(null,back,null,free?'story':'free');};
   var b=add(bt,'button','go',free?'Serbest oyna':'Yeni oyun');b.onclick=function(){if(free)startFree();else{newRun();brief(0);}};
   $('ov').hidden=false;
@@ -1254,6 +1263,6 @@ setInterval(step,TICK);
 </script>
 
 <script>if('serviceWorker' in navigator&&!(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform())){addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
-<!-- build 1069830b88 -->
+<!-- build dd913484f0 -->
 </body>
 </html>
